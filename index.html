@@ -697,8 +697,6 @@ footer a:hover { color: var(--accent); }
                 <div style="font-size:12px;color:var(--text2);margin-bottom:4px">١. حمّل Ollama من <a href="https://ollama.com" target="_blank" style="color:var(--accent)">ollama.com</a></div>
                 <div style="font-size:12px;color:var(--text2);margin-bottom:4px">٢. شغّله مع تفعيل CORS:</div>
                 <div class="code">OLLAMA_ORIGINS=* ollama serve</div>
-                <div style="font-size:12px;color:var(--text2);margin-bottom:4px">٣. حمّل نموذج (مثلاً Qwen يدعم العربية جيداً):</div>
-                <div class="code">ollama pull qwen2.5:7b</div>
                 <div style="font-size:12px;color:var(--text2);margin-bottom:4px;margin-top:8px">اسم النموذج:</div>
                 <input class="setup-inp" id="modelInput" value="qwen2.5:7b" placeholder="llama3.2 / qwen2.5:7b / mistral" />
               </div>
@@ -708,8 +706,7 @@ footer a:hover { color: var(--accent); }
               <div class="method-desc">Gemini Nano مدمج في Chrome — يعمل بدون إنترنت بعد التحميل.</div>
               <div style="margin-top:12px">
                 <div style="font-size:12px;color:var(--text2)">يحتاج Chrome 127+ مع تفعيل:</div>
-                <div class="code">chrome://flags/#optimization-guide-on-device-model
-chrome://flags/#prompt-api-for-gemini-nano</div>
+                <div class="code">chrome://flags/#optimization-guide-on-device-model<br>chrome://flags/#prompt-api-for-gemini-nano</div>
                 <div style="font-size:12px;color:var(--text2)">اضبطهما على <strong style="color:var(--accent)">Enabled</strong> ثم أعد تشغيل المتصفح</div>
               </div>
             </div>
@@ -771,6 +768,8 @@ let targetLang = 'none';
 let useAI = true;
 let selMethod = 'ollama';
 let backendReady = false;
+let globalResultText = '';
+let videoTitleForDownload = 'transcript';
 
 // ─── UI Helpers ───
 function toast(msg, dur = 2200) {
@@ -865,10 +864,15 @@ function extractVideoId(url) {
 
 // ─── Fetch Transcript via Railway Backend ───
 async function fetchTranscript(videoId) {
-  // ⚠️ لا تنسَ تغيير هذا الرابط برابط سيرفرك الخاص من Railway
   const backendUrl = 'https://backend-production-fe55.up.railway.app'; 
-  
-  const res = await fetch(`${backendUrl}/api/transcript?v=${videoId}`);
+  const res = await fetch(`${backendUrl}/api/transcript?v=${videoId}`, {
+    method: 'GET',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    mode: 'cors'
+  });
   
   if (!res.ok) {
     const errData = await res.json().catch(() => ({}));
@@ -885,18 +889,14 @@ function basicCleanup(text) {
     .replace(/(\w+)(\s+){2,}/gi, '$1')
     .replace(/([.!?])\s*/g, '$1 ')
     .replace(/\s{2,}/g, ' ')
-    .replace(/([.!?؟!]) ([A-ZА-Яأ-ي])/g, '$1
-
-$2')
+    .replace(/([.!?؟!]) ([A-ZА-Яأ-ي])/g, '$1\n\n$2')
     .trim();
 }
 
 // ─── MyMemory Translation ───
 async function translateMyMemory(text, from, to) {
   const chunks = [];
-  const sentences = text.match(/[^.!?؟
-]+[.!?؟
-]*/g) || [text];
+  const sentences = text.match(/[^.!?؟\n]+[.!?؟\n]*/g) || [text];
   let cur = '';
   for (const s of sentences) {
     if ((cur + s).length > 450) { if (cur.trim()) chunks.push(cur.trim()); cur = s; }
@@ -946,20 +946,14 @@ async function aiCleanup(text) {
   const words = text.split(/\s+/);
   const chunkSize = 700;
   if (words.length <= chunkSize) {
-    return await runAI(`نظّف هذا النص المستخرج من ترجمة فيديو: أضف علامات الترقيم، صحح الكلمات المكررة، قسّمه إلى فقرات منطقية. لا تحذف أي محتوى. النص فقط بدون تعليقات:
-
-${text}`);
+    return await runAI(`نظّف هذا النص المستخرج من ترجمة فيديو: أضف علامات الترقيم، صحح الكلمات المكررة، قسّمه إلى فقرات منطقية. لا تحذف أي محتوى. النص فقط بدون تعليقات:\n\n${text}`);
   }
   let out = '';
   const chunks = [];
   for (let i = 0; i < words.length; i += chunkSize) chunks.push(words.slice(i, i + chunkSize).join(' '));
   for (let i = 0; i < chunks.length; i++) {
     updateProg(10 + (i / chunks.length) * 55);
-    out += await runAI(`نظّف هذا النص من ترجمة فيديو وأضف علامات الترقيم وقسّمه لفقرات. النص فقط:
-
-${chunks[i]}`) + '
-
-';
+    out += await runAI(`نظّف هذا النص من ترجمة فيديو وأضف علامات الترقيم وقسّمه لفقرات. النص فقط:\n\n${chunks[i]}`) + '\n\n';
   }
   return out.trim();
 }
@@ -984,168 +978,163 @@ function renderSteps(steps, showProg) {
   </div>`;
 }
 
-// ─── Main Process ───
+// ─── الدالة الأساسية لإدارة معالجة الفيديو بالكامل ───
 async function startProcess() {
-  const url = document.getElementById('urlInput').value.trim();
-  if (!url) { toast('الصق رابط الفيديو أولاً'); return; }
-  const vid = extractVideoId(url);
-  if (!vid) { toast('رابط يوتيوب غير صالح'); return; }
+  const urlInp = document.getElementById('urlInput');
+  const mainBtn = document.getElementById('mainBtn');
+  const errArea = document.getElementById('errArea');
+  const resArea = document.getElementById('resultArea');
+  const statusArea = document.getElementById('statusArea');
 
-  document.getElementById('mainBtn').disabled = true;
-  document.getElementById('errArea').style.display = 'none';
-  document.getElementById('resultArea').innerHTML = '';
-  document.getElementById('setupPanel').style.display = 'none';
+  errArea.style.display = 'none';
+  resArea.innerHTML = '';
+  globalResultText = '';
 
-  const needTranslate = targetLang !== 'none';
-  const steps = [
-    { label: 'استخراج الترجمة من يوتيوب', state: 'active' },
-    { label: 'تنظيف النص وترتيبه', state: 'pend' },
-    ...(needTranslate ? [{ label: `ترجمة إلى ${targetLang === 'ar' ? 'العربية' : 'الإنجليزية'}`, state: 'pend' }] : [])
+  const url = urlInp.value.trim();
+  const vId = extractVideoId(url);
+
+  if (!vId) {
+    showError('رابط الفيديو غير صحيح!', 'يرجى التأكد من نسخ رابط يوتيوب بشكل سليم (فيديو، شورتس، أو بث مباشر).');
+    return;
+  }
+
+  mainBtn.disabled = true;
+  
+  let steps = [
+    { key: 'fetch', label: 'استخراج النص والترجمة الأصلية من يوتيوب', state: 'active' }
   ];
-  renderSteps(steps, false);
+  if (useAI && backendReady) {
+    steps.push({ key: 'ai', label: 'تنسيق وتنظيف النص بالذكاء الاصطناعي المحلي', state: 'pend', note: `(${ollamaModel})` });
+  }
+  if (targetLang !== 'none') {
+    steps.push({ key: 'translate', label: 'ترجمة النص إلى اللغة المطلوبة', state: 'pend' });
+  }
+
+  renderSteps(steps, useAI || targetLang !== 'none');
+  updateProg(5);
 
   try {
-    const data = await fetchTranscript(vid);
+    const rawData = await fetchTranscript(vId);
+    videoTitleForDownload = rawData.title || 'transcript';
+    
+    let currentText = rawData.transcript.map(item => item.text).join(' ');
+    let currentLang = rawData.languageCode || 'en';
 
     steps[0].state = 'done';
-    steps[1].state = 'active';
-    steps[1].note = data.langName;
-    const longText = data.raw.split(/\s+/).length > 600;
-    renderSteps(steps, longText);
-
-    let cleaned;
-    if (useAI && backendReady) {
-      try { cleaned = await aiCleanup(data.raw); } catch(e) { cleaned = basicCleanup(data.raw); }
+    
+    let aiStepIdx = steps.findIndex(s => s.key === 'ai');
+    if (aiStepIdx !== -1) {
+      steps[aiStepIdx].state = 'active';
+      renderSteps(steps, true);
+      currentText = await aiCleanup(currentText);
+      steps[aiStepIdx].state = 'done';
     } else {
-      cleaned = basicCleanup(data.raw);
+      currentText = basicCleanup(currentText);
     }
 
-    steps[1].state = 'done';
-    let final = cleaned;
-    let wasTranslated = false;
-
-    if (needTranslate) {
-      const same = (targetLang === 'ar' && (data.lang === 'ar' || data.lang.startsWith('ar'))) ||
-                   (targetLang === 'en' && (data.lang === 'en' || data.lang.startsWith('en')));
-      if (!same) {
-        if (steps[2]) { steps[2].state = 'active'; renderSteps(steps, true); updateProg(5); }
-
-        if (window.translation) {
-          try {
-            const detector = await window.translation.createDetector();
-            const detected = await detector.detect(cleaned.substring(0, 500));
-            const srcLang = detected[0]?.detectedLanguage || data.lang;
-            const translator = await window.translation.createTranslator({ sourceLanguage: srcLang, targetLanguage: targetLang });
-            if (typeof translator.ready !== 'undefined') await translator.ready;
-            const parts = cleaned.split('
-
-').filter(Boolean);
-            let out = '';
-            for (let i = 0; i < parts.length; i++) {
-              updateProg(10 + (i / parts.length) * 85);
-              out += await translator.translate(parts[i]) + '
-
-';
-            }
-            final = out.trim();
-            wasTranslated = true;
-          } catch(e) {
-            final = await translateMyMemory(cleaned, data.lang, targetLang);
-            wasTranslated = true;
-          }
-        } else {
-          final = await translateMyMemory(cleaned, data.lang, targetLang);
-          wasTranslated = true;
-        }
-
-        if (steps[2]) steps[2].state = 'done';
-      } else {
-        if (steps[2]) steps[2].state = 'done';
-      }
+    let transStepIdx = steps.findIndex(s => s.key === 'translate');
+    if (transStepIdx !== -1) {
+      steps[transStepIdx].state = 'active';
+      renderSteps(steps, true);
+      currentText = await translateMyMemory(currentText, currentLang, targetLang);
+      steps[transStepIdx].state = 'done';
     }
 
-    renderSteps(steps.map(s => ({...s, state:'done'})), false);
-    setTimeout(() => {
-      document.getElementById('statusArea').style.display = 'none';
-      showResult(final, data, wasTranslated);
-      document.getElementById('mainBtn').disabled = false;
-    }, 500);
+    updateProg(100);
+    setTimeout(() => { statusArea.style.display = 'none'; }, 600);
+    
+    globalResultText = currentText;
+    renderResult(rawData);
 
-  } catch(err) {
-    document.getElementById('statusArea').style.display = 'none';
-    document.getElementById('errArea').style.display = 'block';
-    document.getElementById('errArea').innerHTML = `<div class="err-box">
-      <div class="err-title">⚠ خطأ</div>
-      <div class="err-msg">${err.message.replace(/
-/g,'<br>')}</div>
-    </div>`;
-    document.getElementById('mainBtn').disabled = false;
+  } catch (err) {
+    console.error(err);
+    showError('حدث خطأ أثناء معالجة الطلب', err.message || 'تأكد من اتصالك بالإنترنت أو أن الفيديو يحتوي على تفريغ نصي متوفر.');
+  } finally {
+    mainBtn.disabled = false;
   }
 }
 
-// ─── Show Result ───
-function showResult(text, data, wasTranslated) {
-  const wc = text.split(/\s+/).filter(Boolean).length;
-  const pc = text.split(/
-
-+/).filter(Boolean).length;
-  const mins = Math.round(wc / 200) || 1;
-  const badge = wasTranslated
-    ? `<span class="badge badge-blue">${targetLang === 'ar' ? 'مترجم للعربية' : 'Translated to English'}</span>`
-    : `<span class="badge badge-green">منظّف</span>`;
-
-  document.getElementById('resultArea').innerHTML = `<div class="result-wrap">
-    <div class="stats-grid">
-      <div class="stat"><div class="stat-v">${wc.toLocaleString('ar')}</div><div class="stat-l">كلمة</div></div>
-      <div class="stat"><div class="stat-v">${pc}</div><div class="stat-l">فقرة</div></div>
-      <div class="stat"><div class="stat-v">~${mins}</div><div class="stat-l">دقيقة قراءة</div></div>
-      <div class="stat"><div class="stat-v">${data.langName}</div><div class="stat-l">لغة الفيديو</div></div>
-    </div>
-    <div class="result-card">
-      <div class="result-hd">
-        <div class="result-title">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10,9 9,9 8,9"/></svg>
-          <span>${data.title ? data.title.substring(0,52) + (data.title.length > 52 ? '…' : '') : 'النص المستخرج'}</span>
-          ${badge}
-        </div>
-        <div class="result-actions">
-          <button class="btn-action" onclick="copyResult()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-            نسخ
-          </button>
-          <button class="btn-action" onclick="downloadResult('${(data.title || 'transcript').replace(/'/g,"\'")}')">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            تنزيل
-          </button>
-        </div>
+// ─── عرض لوحة الأخطاء ───
+function showError(title, msg) {
+  const errArea = document.getElementById('errArea');
+  errArea.style.display = 'block';
+  errArea.innerHTML = `
+    <div class="err-box">
+      <div class="err-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        ${title}
       </div>
-      <div class="result-body">
-        <div class="tx-text" id="txOut">${text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</div>
-      </div>
-    </div>
-  </div>`;
+      <div class="err-msg">${msg}</div>
+    </div>`;
+  document.getElementById('statusArea').style.display = 'none';
 }
 
-function copyResult() {
-  const el = document.getElementById('txOut');
-  if (el) navigator.clipboard.writeText(el.textContent).then(() => toast('✓ تم النسخ'));
+// ─── عرض النتيجة النهائية والإحصائيات ───
+function renderResult(data) {
+  const resArea = document.getElementById('resultArea');
+  const wordCount = globalResultText.split(/\s+/).filter(w => w.length > 0).length;
+  const readingTime = Math.max(1, Math.ceil(wordCount / 180)); 
+
+  resArea.innerHTML = `
+    <div class="result-wrap">
+      <div class="stats-grid">
+        <div class="stat"><div class="stat-v">${wordCount}</div><div class="stat-l">عدد الكلمات</div></div>
+        <div class="stat"><div class="stat-v">~${readingTime} د</div><div class="stat-l">مدة القراءة المتوقعة</div></div>
+        <div class="stat"><div class="stat-v">${targetLang !== 'none' ? targetLang.toUpperCase() : (data.languageCode || 'auto').toUpperCase()}</div><div class="stat-l">لغة النص الحالية</div></div>
+        <div class="stat"><div class="stat-v">${useAI && backendReady ? 'مفعّل ✨' : 'أساسي'}</div><div class="stat-l">التنسيق الذكي</div></div>
+      </div>
+      
+      <div class="result-card">
+        <div class="result-hd">
+          <div class="result-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <span>${data.title || 'النص المستخرج'}</span>
+          </div>
+          <div class="result-actions">
+            <button class="btn-action" onclick="copyText()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              نسخ النص
+            </button>
+            <button class="btn-action" onclick="downloadTxt()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4M7 10l5 5 5-5M12 15V3"/></svg>
+              تنزيل ملف TXT
+            </button>
+          </div>
+        </div>
+        <div class="result-body">
+          <div class="tx-text">${globalResultText}</div>
+        </div>
+      </div>
+    </div>`;
 }
 
-function downloadResult(title) {
-  const el = document.getElementById('txOut');
-  if (!el) return;
-  const blob = new Blob([el.textContent], { type: 'text/plain;charset=utf-8' });
+// ─── نسخ النص ───
+function copyText() {
+  if (!globalResultText) return;
+  navigator.clipboard.writeText(globalResultText)
+    .then(() => toast('✓ تم نسخ النص الكامل إلى الحافظة'))
+    .catch(() => toast('⚠ فشل نسخ النص، يرجى تحديده يدوياً'));
+}
+
+// ─── تنزيل الملف النصي ───
+function downloadTxt() {
+  if (!globalResultText) return;
+  const blob = new Blob([globalResultText], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = (title || 'transcript').replace(/[^\w؀-ۿ\s-]/g,'') + '.txt';
+  const safeTitle = videoTitleForDownload.replace(/[\\/:*?"<>|]/g, '_');
+  
+  a.href = url;
+  a.download = `${safeTitle}.txt`;
+  document.body.appendChild(a);
   a.click();
-  URL.revokeObjectURL(a.href);
-  toast('✓ جاري التنزيل');
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  toast('✓ بدأ تحميل الملف النصي');
 }
 
-document.getElementById('urlInput').addEventListener('keydown', e => { if (e.key === 'Enter') startProcess(); });
-
-detectBackend();
+// الكشف التلقائي عن الذكاء الاصطناعي عند الإقلاع
+window.addEventListener('DOMContentLoaded', detectBackend);
 </script>
 </body>
 </html>
