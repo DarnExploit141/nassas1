@@ -158,7 +158,6 @@ nav {
   justify-content: center;
   flex-wrap: wrap;
   gap: 10px;
-  margin-bottom: 0;
 }
 .feat-pill {
   display: flex;
@@ -187,7 +186,6 @@ nav {
   font-size: 13px;
   margin-bottom: 24px;
   text-align: center;
-  overflow: hidden;
 }
 
 /* ─── Main Card ─── */
@@ -262,7 +260,32 @@ nav {
 .btn-extract:hover { opacity: 0.88; }
 .btn-extract:active { transform: scale(0.97); }
 .btn-extract:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
-.btn-extract svg { width: 18px; height: 18px; }
+
+/* ─── Fallback Manual Box ─── */
+.manual-box {
+  background: var(--bg3);
+  border: 1px solid rgba(0,229,180,0.2);
+  border-radius: var(--r);
+  padding: 16px;
+  margin-bottom: 18px;
+  animation: fadeUp 0.3s ease;
+}
+.manual-box p { font-size: 13px; color: var(--text2); margin-bottom: 10px; }
+.manual-textarea {
+  width: 100%;
+  height: 120px;
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-radius: var(--r-sm);
+  padding: 12px;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 14px;
+  outline: none;
+  resize: vertical;
+  margin-bottom: 10px;
+}
+.manual-textarea:focus { border-color: var(--accent); }
 
 /* ─── Options Row ─── */
 .opts-section {
@@ -335,7 +358,6 @@ nav {
   color: var(--text2);
   cursor: pointer;
   font-family: var(--font);
-  transition: all 0.15s;
 }
 .btn-setup:hover { border-color: var(--border3); color: var(--text); }
 
@@ -359,8 +381,7 @@ nav {
   justify-content: space-between;
 }
 .setup-panel-body { padding: 18px; }
-.method { border: 1px solid var(--border2); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; cursor: pointer; transition: border-color 0.15s; }
-.method:hover { border-color: var(--border3); }
+.method { border: 1px solid var(--border2); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; cursor: pointer; }
 .method.sel { border-color: rgba(0,229,180,0.45); background: var(--accent-dim); }
 .method-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
 .method-desc { font-size: 13px; color: var(--text2); line-height: 1.65; }
@@ -379,7 +400,6 @@ nav {
   direction: ltr;
   margin-top: 6px;
 }
-.setup-inp:focus { border-color: rgba(0,229,180,0.4); }
 .setup-actions { display: flex; gap: 8px; margin-top: 16px; }
 .btn-sm {
   height: 38px;
@@ -389,13 +409,10 @@ nav {
   border-radius: 8px;
   cursor: pointer;
   border: 1px solid var(--border2);
-  transition: all 0.15s;
   font-weight: 500;
 }
 .btn-sm-pri { background: var(--accent); color: #07080F; border-color: transparent; }
-.btn-sm-pri:hover { opacity: 0.85; }
 .btn-sm-sec { background: transparent; color: var(--text2); }
-.btn-sm-sec:hover { background: var(--bg4); color: var(--text); }
 
 /* ─── Status Steps ─── */
 .steps-wrap {
@@ -405,21 +422,10 @@ nav {
   padding: 18px;
   margin-bottom: 16px;
 }
-.step {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 7px 0;
-  font-size: 14px;
-}
+.step { display: flex; align-items: center; gap: 12px; padding: 7px 0; font-size: 14px; }
 .step-ic {
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 13px;
 }
 .s-done .step-ic { background: rgba(0,212,170,0.15); color: var(--accent); border: 1px solid rgba(0,212,170,0.3); }
 .s-active .step-ic { background: rgba(124,58,237,0.15); color: #A78BFA; border: 1px solid rgba(124,58,237,0.3); }
@@ -436,162 +442,62 @@ nav {
 .result-wrap { animation: fadeUp 0.4s ease; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
-.stat {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px 14px;
-  text-align: center;
-}
+.stat { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; text-align: center; }
 .stat-v { font-size: 22px; font-weight: 700; color: var(--text); }
 .stat-l { font-size: 12px; color: var(--text3); margin-top: 2px; }
-.result-card {
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  border-radius: var(--r);
-  overflow: hidden;
-}
-.result-hd {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 18px;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg4);
-}
-.result-title {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-}
+.result-card { background: var(--bg3); border: 1px solid var(--border2); border-radius: var(--r); overflow: hidden; }
+.result-hd { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--border); background: var(--bg4); }
+.result-title { font-size: 14px; font-weight: 500; color: var(--text); display: flex; align-items: center; gap: 8px; min-width: 0; }
 .result-title span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.badge {
-  font-size: 11px;
-  padding: 3px 9px;
-  border-radius: 99px;
-  font-weight: 500;
-  flex-shrink: 0;
-}
+.badge { font-size: 11px; padding: 3px 9px; border-radius: 99px; font-weight: 500; flex-shrink: 0; }
 .badge-green { background: rgba(0,212,170,0.12); color: var(--accent); border: 1px solid rgba(0,212,170,0.25); }
 .badge-blue { background: rgba(124,58,237,0.12); color: #A78BFA; border: 1px solid rgba(124,58,237,0.25); }
 .result-actions { display: flex; gap: 8px; flex-shrink: 0; }
 .btn-action {
-  height: 34px;
-  padding: 0 14px;
-  font-size: 13px;
-  font-family: var(--font);
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  color: var(--text2);
-  border-radius: 8px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.15s;
-  font-weight: 500;
+  height: 34px; padding: 0 14px; font-size: 13px; font-family: var(--font); background: var(--bg3);
+  border: 1px solid var(--border2); color: var(--text2); border-radius: 8px; cursor: pointer;
+  display: flex; align-items: center; gap: 6px; font-weight: 500;
 }
 .btn-action:hover { background: var(--bg4); color: var(--text); border-color: var(--border3); }
-.result-body {
-  padding: 20px;
-  max-height: 440px;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--bg4) transparent;
-}
-.result-body::-webkit-scrollbar { width: 4px; }
-.result-body::-webkit-scrollbar-track { background: transparent; }
-.result-body::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 99px; }
-.tx-text {
-  font-size: 16px;
-  line-height: 2;
-  color: var(--text);
-  white-space: pre-wrap;
-  direction: auto;
-  font-weight: 300;
-}
+.result-body { padding: 20px; max-height: 440px; overflow-y: auto; }
+.tx-text { font-size: 16px; line-height: 2; color: var(--text); white-space: pre-wrap; direction: auto; font-weight: 300; }
 
 /* ─── Error ─── */
 .err-box {
   background: rgba(255,77,109,0.08);
   border: 1px solid rgba(255,77,109,0.25);
-  border-radius: var(--r);
-  padding: 16px 18px;
-  margin-bottom: 16px;
-  animation: fadeUp 0.3s ease;
+  border-radius: var(--r); padding: 16px 18px; margin-bottom: 16px; animation: fadeUp 0.3s ease;
 }
 .err-title { font-size: 14px; font-weight: 600; color: var(--red); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
-.err-msg { font-size: 14px; color: #FF8098; line-height: 1.7; }
+.err-msg { font-size: 14px; color: #FF8098; line-height: 1.7; margin-bottom: 12px; }
 
 /* ─── How It Works ─── */
 .how-section { padding: 16px 0 60px; }
 .section-title { font-size: 22px; font-weight: 700; color: var(--text); text-align: center; margin-bottom: 8px; }
 .section-sub { font-size: 15px; color: var(--text2); text-align: center; margin-bottom: 36px; }
 .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.step-card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 22px;
-  text-align: center;
-  transition: border-color 0.2s;
-}
-.step-card:hover { border-color: var(--border2); }
+.step-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 22px; text-align: center; }
 .step-num {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  background: var(--accent-dim);
-  border: 1px solid rgba(0,229,180,0.25);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  font-weight: 900;
-  color: var(--accent);
-  margin: 0 auto 14px;
+  width: 44px; height: 44px; border-radius: 12px; background: var(--accent-dim);
+  border: 1px solid rgba(0,229,180,0.25); display: flex; align-items: center; justify-content: center;
+  font-size: 20px; font-weight: 900; color: var(--accent); margin: 0 auto 14px;
 }
 .step-card h3 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
 .step-card p { font-size: 13px; color: var(--text2); line-height: 1.7; }
 
-/* ─── Footer ─── */
-footer {
-  border-top: 1px solid var(--border);
-  padding: 24px 20px;
-  text-align: center;
-  font-size: 13px;
-  color: var(--text3);
-}
+footer { border-top: 1px solid var(--border); padding: 24px 20px; text-align: center; font-size: 13px; color: var(--text3); }
 footer a { color: var(--text2); text-decoration: none; }
 footer a:hover { color: var(--accent); }
 
-/* ─── Toast ─── */
 .toast {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--bg4);
-  border: 1px solid var(--border2);
-  color: var(--text);
-  padding: 10px 22px;
-  border-radius: 99px;
-  font-size: 14px;
-  font-family: var(--font);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-  opacity: 0;
-  transition: opacity 0.2s, transform 0.2s;
-  pointer-events: none;
-  z-index: 999;
-  white-space: nowrap;
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: var(--bg4); border: 1px solid var(--border2); color: var(--text);
+  padding: 10px 22px; border-radius: 99px; font-size: 14px; font-family: var(--font);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5); opacity: 0; transition: opacity 0.2s, transform 0.2s;
+  pointer-events: none; z-index: 999;
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
 
-/* ─── Mobile ─── */
 @media (max-width: 600px) {
   .hero { padding: 50px 0 36px; }
   .url-wrap { flex-direction: column; }
@@ -629,14 +535,12 @@ footer a:hover { color: var(--accent); }
     </div>
   </div>
 
-  <div class="ad-space" id="ad-top">
-    مساحة إعلانية (Banner 728x90)
-    </div>
+  <div class="ad-space" id="ad-top">مساحة إعلانية (Banner 728x90)</div>
 
   <div class="main-card">
     <div class="card-header">
       <div class="card-title">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent)"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>
         استخراج النص
       </div>
     </div>
@@ -644,18 +548,18 @@ footer a:hover { color: var(--accent); }
 
       <div class="url-wrap">
         <input class="url-input" id="urlInput" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off" spellcheck="false" />
-        <button class="btn-extract" id="mainBtn" onclick="startProcess()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-          استخراج
-        </button>
+        <button class="btn-extract" id="mainBtn" onclick="startProcess()">استخراج</button>
+      </div>
+
+      <div id="manualFallbackBox" class="manual-box" style="display:none">
+        <p>💡 <strong>خطة بديلة:</strong> الصق نص الترجمة الأصلي المأخوذ من يوتيوب يدوياً وسيتولى الذكاء الاصطناعي معالجته وترجمته فوراً:</p>
+        <textarea class="manual-textarea" id="manualTextarea" placeholder="الصق النص أو ملف التسميات التوضيحية هنا..."></textarea>
+        <button class="btn-sm btn-sm-pri" onclick="processManualText()">✓ معالجة النص المكتوب</button>
       </div>
 
       <div class="opts-section">
         <div class="opt-group">
-          <div class="opt-label">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l6 6 6-6"/></svg>
-            ترجمة النص إلى
-          </div>
+          <div class="opt-label">ترجمة النص إلى</div>
           <div class="pill-group">
             <button class="pill active" data-lang="none" onclick="setLang(this)">بدون ترجمة</button>
             <button class="pill" data-lang="ar" onclick="setLang(this)">🇮🇶 العربية</button>
@@ -663,10 +567,7 @@ footer a:hover { color: var(--accent); }
           </div>
         </div>
         <div class="opt-group">
-          <div class="opt-label">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
-            تنظيف النص بالذكاء الاصطناعي
-          </div>
+          <div class="opt-label">تنظيف النص بالذكاء الاصطناعي</div>
           <div class="pill-group">
             <button class="pill active" data-ai="on" onclick="setAI(this)">تلقائي</button>
             <button class="pill" data-ai="off" onclick="setAI(this)">بدون ذكاء اصطناعي</button>
@@ -692,71 +593,33 @@ footer a:hover { color: var(--accent); }
           <div class="setup-panel-body">
             <div class="method sel" id="m-ollama" onclick="pickMethod('ollama')">
               <div class="method-title">🦙 Ollama <span class="badge badge-green">موصى به</span></div>
-              <div class="method-desc">شغّل أقوى النماذج مثل Qwen 2.5 أو Llama 3 على جهازك مباشرة. يدعم العربية بامتياز.</div>
-              <div style="margin-top:12px">
-                <div style="font-size:12px;color:var(--text2);margin-bottom:4px">١. حمّل Ollama من <a href="https://ollama.com" target="_blank" style="color:var(--accent)">ollama.com</a></div>
-                <div style="font-size:12px;color:var(--text2);margin-bottom:4px">٢. شغّله مع تفعيل CORS:</div>
-                <div class="code">OLLAMA_ORIGINS=* ollama serve</div>
-                <div style="font-size:12px;color:var(--text2);margin-bottom:4px;margin-top:8px">اسم النموذج:</div>
-                <input class="setup-inp" id="modelInput" value="qwen2.5:7b" placeholder="llama3.2 / qwen2.5:7b / mistral" />
-              </div>
+              <div class="method-desc">شغّل Qwen 2.5 أو Llama 3 محلياً مع تفعيل CORS:</div>
+              <div class="code">OLLAMA_ORIGINS=* ollama serve</div>
+              <input class="setup-inp" id="modelInput" value="qwen2.5:7b" />
             </div>
             <div class="method" id="m-chrome" onclick="pickMethod('chrome')">
-              <div class="method-title">🌐 Chrome Built-in AI <span class="badge badge-blue">تجريبي</span></div>
-              <div class="method-desc">Gemini Nano مدمج في Chrome — يعمل بدون إنترنت بعد التحميل.</div>
-              <div style="margin-top:12px">
-                <div style="font-size:12px;color:var(--text2)">يحتاج Chrome 127+ مع تفعيل:</div>
-                <div class="code">chrome://flags/#optimization-guide-on-device-model<br>chrome://flags/#prompt-api-for-gemini-nano</div>
-                <div style="font-size:12px;color:var(--text2)">اضبطهما على <strong style="color:var(--accent)">Enabled</strong> ثم أعد تشغيل المتصفح</div>
-              </div>
+              <div class="method-title">🌐 Chrome Built-in AI</div>
+              <div class="method-desc">Gemini Nano المدمج في المتصفح.</div>
             </div>
             <div class="setup-actions">
               <button class="btn-sm btn-sm-pri" onclick="applyBackend()">✓ تطبيق وفحص</button>
-              <button class="btn-sm btn-sm-sec" onclick="toggleSetup()">إلغاء</button>
             </div>
           </div>
         </div>
       </div>
 
       <div id="statusArea" style="display:none"></div>
-
       <div id="errArea" style="display:none"></div>
-
       <div id="resultArea"></div>
 
     </div>
   </div>
 
-  <div class="ad-space" id="ad-bottom">
-    مساحة إعلانية (Banner 728x90)
-    </div>
-
-  <div class="how-section">
-    <div class="section-title">كيف يعمل؟</div>
-    <div class="section-sub">ثلاث خطوات فقط للحصول على النص الكامل</div>
-    <div class="steps-grid">
-      <div class="step-card">
-        <div class="step-num">١</div>
-        <h3>الصق الرابط</h3>
-        <p>أي رابط يوتيوب — فيديو عادي، شورتس، أو بث مباشر مسجّل</p>
-      </div>
-      <div class="step-card">
-        <div class="step-num">٢</div>
-        <h3>يُعالج الذكاء الاصطناعي</h3>
-        <p>يستخرج الترجمة ويرتّبها في فقرات واضحة بعلامات ترقيم سليمة</p>
-      </div>
-      <div class="step-card">
-        <div class="step-num">٣</div>
-        <h3>انسخ أو حمّل</h3>
-        <p>النص جاهز — انسخه أو حمّله كملف .txt مباشرة</p>
-      </div>
-    </div>
-  </div>
+  <div class="ad-space" id="ad-bottom">مساحة إعلانية (Banner 728x90)</div>
 </div>
 
 <footer>
   <div>نصّص — مجاني ومفتوح المصدر · يعمل مباشرة في المتصفح</div>
-  <div style="margin-top:6px">لا يُجمع أي بيانات · <a href="https://ollama.com" target="_blank">Ollama</a> · <a href="https://mymemory.translated.net" target="_blank">MyMemory API</a></div>
 </footer>
 
 <div class="toast" id="toast"></div>
@@ -771,12 +634,11 @@ let backendReady = false;
 let globalResultText = '';
 let videoTitleForDownload = 'transcript';
 
-// ─── UI Helpers ───
-function toast(msg, dur = 2200) {
+function toast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), dur);
+  setTimeout(() => t.classList.remove('show'), 2200);
 }
 
 function setLang(el) {
@@ -784,6 +646,10 @@ function setLang(el) {
   el.classList.add('active');
   targetLang = el.dataset.lang;
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  detectBackend();
+});
 
 function setAI(el) {
   document.querySelectorAll('[data-ai]').forEach(b => b.classList.remove('active'));
@@ -802,7 +668,6 @@ function pickMethod(m) {
   document.getElementById('m-chrome').classList.toggle('sel', m === 'chrome');
 }
 
-// ─── Backend Detection ───
 async function detectBackend() {
   const pulse = document.getElementById('bPulse');
   const name = document.getElementById('bName');
@@ -815,7 +680,7 @@ async function detectBackend() {
         aiBackend = 'chrome-ai';
         pulse.className = 'pulse pulse-green';
         name.textContent = 'Chrome Built-in AI (Gemini Nano)';
-        sub.textContent = 'يعمل على جهازك — لا يحتاج إنترنت';
+        sub.textContent = 'جاهز للاستخدام بدون إنترنت';
         backendReady = true;
         return;
       }
@@ -823,19 +688,14 @@ async function detectBackend() {
   }
 
   try {
-    const res = await fetch('http://localhost:11434/api/tags', { signal: AbortSignal.timeout(2500) });
+    const res = await fetch('http://localhost:11434/api/tags', { signal: AbortSignal.timeout(2000) });
     if (res.ok) {
-      const data = await res.json();
-      if (data.models && data.models.length > 0) {
-        const m = data.models[0].name;
-        ollamaModel = document.getElementById('modelInput').value.trim() || m.split(':')[0];
-        aiBackend = 'ollama';
-        pulse.className = 'pulse pulse-green';
-        name.textContent = 'Ollama — ' + (document.getElementById('modelInput').value.trim() || m);
-        sub.textContent = 'يعمل محلياً على جهازك';
-        backendReady = true;
-        return;
-      }
+      aiBackend = 'ollama';
+      pulse.className = 'pulse pulse-green';
+      name.textContent = 'Ollama متصل';
+      sub.textContent = 'يعمل محلياً بكفاءة';
+      backendReady = true;
+      return;
     }
   } catch(e) {}
 
@@ -843,91 +703,32 @@ async function detectBackend() {
   backendReady = false;
   pulse.className = 'pulse pulse-amber';
   name.textContent = 'لم يُكتشف ذكاء اصطناعي محلي';
-  sub.textContent = 'سيعمل التطبيق مع ترجمة أساسية — اضغط "إعداد" لتفعيل الذكاء الاصطناعي';
+  sub.textContent = 'سيعمل النظام بالتنظيف القياسي أو يمكنك تشغيل Ollama';
 }
 
 async function applyBackend() {
-  const mi = document.getElementById('modelInput');
-  if (mi) ollamaModel = mi.value.trim() || 'qwen2.5:7b';
+  ollamaModel = document.getElementById('modelInput').value.trim() || 'qwen2.5:7b';
   document.getElementById('setupPanel').style.display = 'none';
   await detectBackend();
-  if (!backendReady) toast('⚠ لم يُكتشف الذكاء الاصطناعي. تأكد من تشغيله');
-  else toast('✓ تم الاتصال بنجاح');
+  toast(backendReady ? '✓ تم الاتصال بنجاح' : '⚠ لم يتم العثور على سيرفر الذكاء الاصطناعي');
 }
 
-// ─── Video ID ───
 function extractVideoId(url) {
   const ps = [/[?&]v=([^&#]{11})/,/youtu\.be\/([^?&#]{11})/,/embed\/([^?&#]{11})/,/shorts\/([^?&#]{11})/];
   for (const p of ps) { const m = url.match(p); if (m) return m[1]; }
   return null;
 }
 
-// ─── Fetch Transcript via Railway Backend ───
-async function fetchTranscript(videoId) {
-  const backendUrl = 'https://backend-production-fe55.up.railway.app'; 
-  const res = await fetch(`${backendUrl}/api/transcript?v=${videoId}`, {
-    method: 'GET',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    mode: 'cors'
-  });
-  
-  if (!res.ok) {
-    const errData = await res.json().catch(() => ({}));
-    throw new Error(errData.error || 'تعذّر الاتصال بالسيرفر الخلفي.');
-  }
-  
-  const data = await res.json();
-  return data;
-}
-
-// ─── Basic Cleanup (no AI) ───
 function basicCleanup(text) {
-  return text
-    .replace(/(\w+)(\s+){2,}/gi, '$1')
-    .replace(/([.!?])\s*/g, '$1 ')
-    .replace(/\s{2,}/g, ' ')
-    .replace(/([.!?؟!]) ([A-ZА-Яأ-ي])/g, '$1\n\n$2')
-    .trim();
+  return text.replace(/\s{2,}/g, ' ').replace(/([.!?؟])\s*/g, '$1\n\n').trim();
 }
 
-// ─── MyMemory Translation ───
-async function translateMyMemory(text, from, to) {
-  const chunks = [];
-  const sentences = text.match(/[^.!?؟\n]+[.!?؟\n]*/g) || [text];
-  let cur = '';
-  for (const s of sentences) {
-    if ((cur + s).length > 450) { if (cur.trim()) chunks.push(cur.trim()); cur = s; }
-    else cur += s;
-  }
-  if (cur.trim()) chunks.push(cur.trim());
-
-  let out = '';
-  for (let i = 0; i < chunks.length; i++) {
-    updateProg(30 + (i / chunks.length) * 65);
-    const pair = (from === 'und' ? 'autodetect' : from) + '|' + to;
-    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunks[i])}&langpair=${pair}`;
-    const r = await fetch(url);
-    const d = await r.json();
-    if (d.responseStatus === 200 && d.responseData?.translatedText) {
-      out += d.responseData.translatedText + ' ';
-    } else {
-      out += chunks[i] + ' ';
-    }
-    await new Promise(r => setTimeout(r, 120));
-  }
-  return out.trim();
-}
-
-// ─── AI Process ───
 async function runAI(prompt) {
   if (aiBackend === 'chrome-ai') {
-    const session = await window.ai.languageModel.create({ systemPrompt: 'أنت مساعد متخصص في تحرير النصوص. أجب بالنص المطلوب فقط بدون أي مقدمات أو تعليقات.' });
-    const result = await session.prompt(prompt);
+    const session = await window.ai.languageModel.create();
+    const res = await session.prompt(prompt);
     session.destroy();
-    return result;
+    return res;
   }
   if (aiBackend === 'ollama') {
     const r = await fetch('http://localhost:11434/api/generate', {
@@ -935,206 +736,198 @@ async function runAI(prompt) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ model: ollamaModel, prompt, stream: false })
     });
-    if (!r.ok) throw new Error('فشل الاتصال بـ Ollama. تأكد من تشغيله مع OLLAMA_ORIGINS=*');
     const d = await r.json();
     return d.response;
   }
-  throw new Error('لا يوجد ذكاء اصطناعي متاح.');
+  throw new Error('لا يوجد ذكاء اصطناعي');
 }
 
 async function aiCleanup(text) {
   const words = text.split(/\s+/);
-  const chunkSize = 700;
-  if (words.length <= chunkSize) {
-    return await runAI(`نظّف هذا النص المستخرج من ترجمة فيديو: أضف علامات الترقيم، صحح الكلمات المكررة، قسّمه إلى فقرات منطقية. لا تحذف أي محتوى. النص فقط بدون تعليقات:\n\n${text}`);
+  if (words.length <= 600) {
+    return await runAI(`نظّف النص التالي المستخرج من يوتيوب، صلح التكرار وأضف علامات ترقيم وفقرات منطقية دقيقة. أخرج النص النظيف فقط دون أي مقدمات:\n\n${text}`);
   }
   let out = '';
-  const chunks = [];
-  for (let i = 0; i < words.length; i += chunkSize) chunks.push(words.slice(i, i + chunkSize).join(' '));
-  for (let i = 0; i < chunks.length; i++) {
-    updateProg(10 + (i / chunks.length) * 55);
-    out += await runAI(`نظّف هذا النص من ترجمة فيديو وأضف علامات الترقيم وقسّمه لفقرات. النص فقط:\n\n${chunks[i]}`) + '\n\n';
+  for (let i = 0; i < words.length; i += 500) {
+    const chunk = words.slice(i, i + 500).join(' ');
+    out += await runAI(`نظّف ورتب هذا النص وعلامات الترقيم. أخرج النص فقط:\n\n${chunk}`) + '\n\n';
   }
   return out.trim();
 }
 
-// ─── Progress ───
-function updateProg(pct) {
-  const el = document.getElementById('pFill');
-  if (el) el.style.width = Math.min(100, Math.round(pct)) + '%';
+async function translateMyMemory(text, from, to) {
+  const chunks = [];
+  const sentences = text.match(/[^.!?؟\n]+[.!?؟\n]*/g) || [text];
+  let cur = '';
+  for (const s of sentences) {
+    if ((cur + s).length > 400) { chunks.push(cur.trim()); cur = s; }
+    else cur += s;
+  }
+  if (cur.trim()) chunks.push(cur.trim());
+
+  let out = '';
+  for (let i = 0; i < chunks.length; i++) {
+    updateProg(40 + (i / chunks.length) * 50);
+    const pair = from + '|' + to;
+    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunks[i])}&langpair=${pair}`;
+    const r = await fetch(url);
+    const d = await r.json();
+    out += (d.responseData?.translatedText || chunks[i]) + ' ';
+  }
+  return out.trim();
 }
 
-// ─── Render Steps ───
-function renderSteps(steps, showProg) {
+function updateProg(pct) {
+  const el = document.getElementById('pFill');
+  if (el) el.style.width = pct + '%';
+}
+
+function renderSteps(steps) {
   const area = document.getElementById('statusArea');
   area.style.display = 'block';
   area.innerHTML = `<div class="steps-wrap">
-    ${steps.map(s => `<div class="step s-${s.state}">
-      <div class="step-ic">${s.state==='done'?'✓':s.state==='active'?'<span class="spin">↻</span>':'○'}</div>
-      <span class="step-lbl">${s.label}</span>
-      ${s.note ? `<span class="step-note">${s.note}</span>` : ''}
-    </div>`).join('')}
-    ${showProg ? `<div class="progress"><div class="progress-fill" id="pFill" style="width:5%"></div></div>` : ''}
+    ${steps.map(s => `<div class="step s-${s.state}"><div class="step-ic">${s.state==='done'?'✓':s.state==='active'?'<span class="spin">↻</span>':'○'}</div><span>${s.label}</span></div>`).join('')}
+    <div class="progress"><div class="progress-fill" id="pFill" style="width:5%"></div></div>
   </div>`;
 }
 
-// ─── الدالة الأساسية لإدارة معالجة الفيديو بالكامل ───
+// ─── العمل التلقائي الرئيسي ───
 async function startProcess() {
   const urlInp = document.getElementById('urlInput');
   const mainBtn = document.getElementById('mainBtn');
   const errArea = document.getElementById('errArea');
   const resArea = document.getElementById('resultArea');
-  const statusArea = document.getElementById('statusArea');
+  const manualBox = document.getElementById('manualFallbackBox');
 
   errArea.style.display = 'none';
+  manualBox.style.display = 'none';
   resArea.innerHTML = '';
-  globalResultText = '';
 
-  const url = urlInp.value.trim();
-  const vId = extractVideoId(url);
-
-  if (!vId) {
-    showError('رابط الفيديو غير صحيح!', 'يرجى التأكد من نسخ رابط يوتيوب بشكل سليم (فيديو، شورتس، أو بث مباشر).');
-    return;
-  }
+  const vId = extractVideoId(urlInp.value.trim());
+  if (!vId) { showError('رابط غير صحيح', 'تأكد من نسخ رابط فيديو يوتيوب صحيح.'); return; }
 
   mainBtn.disabled = true;
-  
-  let steps = [
-    { key: 'fetch', label: 'استخراج النص والترجمة الأصلية من يوتيوب', state: 'active' }
-  ];
-  if (useAI && backendReady) {
-    steps.push({ key: 'ai', label: 'تنسيق وتنظيف النص بالذكاء الاصطناعي المحلي', state: 'pend', note: `(${ollamaModel})` });
-  }
-  if (targetLang !== 'none') {
-    steps.push({ key: 'translate', label: 'ترجمة النص إلى اللغة المطلوبة', state: 'pend' });
-  }
-
-  renderSteps(steps, useAI || targetLang !== 'none');
-  updateProg(5);
+  let steps = [{ key: 'fetch', label: 'استخراج النص الأصلي من يوتيوب', state: 'active' }];
+  if (useAI && backendReady) steps.push({ key: 'ai', label: 'تنسيق الذكاء الاصطناعي', state: 'pend' });
+  if (targetLang !== 'none') steps.push({ key: 'trans', label: 'مرحلة الترجمة', state: 'pend' });
+  renderSteps(steps);
 
   try {
-    const rawData = await fetchTranscript(vId);
-    videoTitleForDownload = rawData.title || 'transcript';
+    const res = await fetch(`https://backend-production-fe55.up.railway.app/api/transcript?v=${vId}`);
+    if (!res.ok) throw new Error('هذا الفيديو مقيّد أو يتطلب تسجيل دخول ولا يمكن استخراج ترجمته آلياً.');
     
-    let currentText = rawData.transcript.map(item => item.text).join(' ');
-    let currentLang = rawData.languageCode || 'en';
-
+    const data = await res.json();
+    videoTitleForDownload = data.title || 'transcript';
+    let currentText = data.transcript.map(i => i.text).join(' ');
+    
     steps[0].state = 'done';
-    
-    let aiStepIdx = steps.findIndex(s => s.key === 'ai');
-    if (aiStepIdx !== -1) {
-      steps[aiStepIdx].state = 'active';
-      renderSteps(steps, true);
+
+    if (useAI && backendReady) {
+      steps[1].state = 'active'; renderSteps(steps);
       currentText = await aiCleanup(currentText);
-      steps[aiStepIdx].state = 'done';
-    } else {
-      currentText = basicCleanup(currentText);
+      steps[1].state = 'done';
     }
 
-    let transStepIdx = steps.findIndex(s => s.key === 'translate');
-    if (transStepIdx !== -1) {
-      steps[transStepIdx].state = 'active';
-      renderSteps(steps, true);
-      currentText = await translateMyMemory(currentText, currentLang, targetLang);
-      steps[transStepIdx].state = 'done';
+    let transIdx = steps.findIndex(s => s.key === 'trans');
+    if (transIdx !== -1) {
+      steps[transIdx].state = 'active'; renderSteps(steps);
+      currentText = await translateMyMemory(currentText, data.languageCode || 'en', targetLang);
+      steps[transIdx].state = 'done';
     }
 
-    updateProg(100);
-    setTimeout(() => { statusArea.style.display = 'none'; }, 600);
-    
+    document.getElementById('statusArea').style.display = 'none';
     globalResultText = currentText;
-    renderResult(rawData);
+    renderResult(data.title || 'فيديو يوتيوب');
 
-  } catch (err) {
-    console.error(err);
-    showError('حدث خطأ أثناء معالجة الطلب', err.message || 'تأكد من اتصالك بالإنترنت أو أن الفيديو يحتوي على تفريغ نصي متوفر.');
+  } catch(e) {
+    showError('فشل الاستخراج التلقائي', e.message);
+    manualBox.style.display = 'block'; // إظهار الصندوق اليدوي للمستخدم لإنقاذ الموقف
   } finally {
     mainBtn.disabled = false;
   }
 }
 
-// ─── عرض لوحة الأخطاء ───
+// ─── معالجة النص يدوياً في حال فشل يوتيوب ───
+async function processManualText() {
+  const rawText = document.getElementById('manualTextarea').value.trim();
+  if (!rawText) { toast('الرجاء لصق نص أولاً!'); return; }
+
+  document.getElementById('errArea').style.display = 'none';
+  let steps = [];
+  if (useAI && backendReady) steps.push({ key: 'ai', label: 'تنسيق وتنظيف النص الذكي', state: 'active' });
+  if (targetLang !== 'none') steps.push({ key: 'trans', label: 'جاري ترجمة النص', state: 'pend' });
+  
+  if(steps.length === 0) {
+    globalResultText = basicCleanup(rawText);
+    renderResult('نص معالج يدوياً');
+    return;
+  }
+
+  renderSteps(steps);
+  let currentText = rawText;
+
+  try {
+    if (useAI && backendReady) {
+      currentText = await aiCleanup(currentText);
+      if(steps[1]) steps[1].state = 'active';
+      steps[0].state = 'done'; renderSteps(steps);
+    }
+    if (targetLang !== 'none') {
+      currentText = await translateMyMemory(currentText, 'auto', targetLang);
+      steps[steps.length-1].state = 'done';
+    }
+    document.getElementById('statusArea').style.display = 'none';
+    document.getElementById('manualFallbackBox').style.display = 'none';
+    globalResultText = currentText;
+    renderResult('نص تم إصلاحه يدوياً');
+  } catch(err) {
+    showError('خطأ أثناء المعالجة اليدوية', err.message);
+  }
+}
+
 function showError(title, msg) {
   const errArea = document.getElementById('errArea');
   errArea.style.display = 'block';
-  errArea.innerHTML = `
-    <div class="err-box">
-      <div class="err-title">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        ${title}
-      </div>
-      <div class="err-msg">${msg}</div>
-    </div>`;
+  errArea.innerHTML = `<div class="err-box"><div class="err-title">⚠ ${title}</div><div class="err-msg">${msg}</div></div>`;
   document.getElementById('statusArea').style.display = 'none';
 }
 
-// ─── عرض النتيجة النهائية والإحصائيات ───
-function renderResult(data) {
+function renderResult(title) {
   const resArea = document.getElementById('resultArea');
   const wordCount = globalResultText.split(/\s+/).filter(w => w.length > 0).length;
-  const readingTime = Math.max(1, Math.ceil(wordCount / 180)); 
-
   resArea.innerHTML = `
     <div class="result-wrap">
       <div class="stats-grid">
         <div class="stat"><div class="stat-v">${wordCount}</div><div class="stat-l">عدد الكلمات</div></div>
-        <div class="stat"><div class="stat-v">~${readingTime} د</div><div class="stat-l">مدة القراءة المتوقعة</div></div>
-        <div class="stat"><div class="stat-v">${targetLang !== 'none' ? targetLang.toUpperCase() : (data.languageCode || 'auto').toUpperCase()}</div><div class="stat-l">لغة النص الحالية</div></div>
-        <div class="stat"><div class="stat-v">${useAI && backendReady ? 'مفعّل ✨' : 'أساسي'}</div><div class="stat-l">التنسيق الذكي</div></div>
+        <div class="stat"><div class="stat-v">~${Math.max(1, Math.ceil(wordCount/180))} د</div><div class="stat-l">وقت القراءة</div></div>
+        <div class="stat"><div class="stat-v">${targetLang.toUpperCase()}</div><div class="stat-l">اللغة المستهدفة</div></div>
+        <div class="stat"><div class="stat-v">${backendReady?'AI محلي':'معالج قياسي'}</div><div class="stat-l">طريقة التنسيق</div></div>
       </div>
-      
       <div class="result-card">
         <div class="result-hd">
-          <div class="result-title">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            <span>${data.title || 'النص المستخرج'}</span>
-          </div>
+          <div class="result-title"><span>${title}</span></div>
           <div class="result-actions">
-            <button class="btn-action" onclick="copyText()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-              نسخ النص
-            </button>
-            <button class="btn-action" onclick="downloadTxt()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4M7 10l5 5 5-5M12 15V3"/></svg>
-              تنزيل ملف TXT
-            </button>
+            <button class="btn-action" onclick="copyText()">نسخ</button>
+            <button class="btn-action" onclick="downloadTxt()">تنزيل TXT</button>
           </div>
         </div>
-        <div class="result-body">
-          <div class="tx-text">${globalResultText}</div>
-        </div>
+        <div class="result-body"><div class="tx-text">${globalResultText}</div></div>
       </div>
     </div>`;
 }
 
-// ─── نسخ النص ───
 function copyText() {
-  if (!globalResultText) return;
-  navigator.clipboard.writeText(globalResultText)
-    .then(() => toast('✓ تم نسخ النص الكامل إلى الحافظة'))
-    .catch(() => toast('⚠ فشل نسخ النص، يرجى تحديده يدوياً'));
+  navigator.clipboard.writeText(globalResultText).then(() => toast('✓ تم النسخ'));
 }
 
-// ─── تنزيل الملف النصي ───
 function downloadTxt() {
-  if (!globalResultText) return;
   const blob = new Blob([globalResultText], { type: 'text/plain;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  const safeTitle = videoTitleForDownload.replace(/[\\/:*?"<>|]/g, '_');
-  
-  a.href = url;
-  a.download = `${safeTitle}.txt`;
-  document.body.appendChild(a);
+  a.href = url; a.download = `${videoTitleForDownload}.txt`;
   a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  toast('✓ بدأ تحميل الملف النصي');
+  toast('✓ بدأ التحميل');
 }
-
-// الكشف التلقائي عن الذكاء الاصطناعي عند الإقلاع
-window.addEventListener('DOMContentLoaded', detectBackend);
 </script>
 </body>
 </html>
