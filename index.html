@@ -3,28 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>نصّص — استخراج وترجمة نصوص يوتيوب</title>
-<meta name="description" content="استخرج النص الكامل من أي فيديو يوتيوب وترجمه بنقرة واحدة — مجاناً بدون تسجيل">
+<title>🚀 نصّص — تحميل وترجمة نصوص يوتيوب</title>
+<meta name="description" content="استخرج النص الكامل من أي فيديو يوتيوب وترجمه بنقرة واحدة">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root {
-  --bg: #07080F;
-  --bg2: #0D1021;
-  --bg3: #131729;
-  --bg4: #1A2038;
-  --border: rgba(255,255,255,0.07);
-  --border2: rgba(255,255,255,0.14);
-  --border3: rgba(255,255,255,0.22);
+  --bg: #0A0D1A;
+  --bg2: #11152C;
+  --bg3: #171D3B;
+  --bg4: #1F264E;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.12);
   --accent: #00E5B4;
-  --accent-dim: rgba(0,229,180,0.12);
-  --accent-glow: rgba(0,229,180,0.25);
-  --purple: #7C3AED;
-  --purple-dim: rgba(124,58,237,0.15);
+  --accent-dim: rgba(0,229,180,0.1);
+  --purple-glow: rgba(124,58,237,0.4);
   --red: #FF4D6D;
-  --amber: #F59E0B;
   --text: #EEF2FF;
   --text2: #8892B0;
   --text3: #4A5568;
@@ -40,56 +36,35 @@ body {
   color: var(--text);
   min-height: 100vh;
   line-height: 1.6;
-  overflow-x: hidden;
 }
 
-/* ─── Background ─── */
+/* خلفية متدرجة وشبكة هندسية */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background:
-    radial-gradient(ellipse 80% 50% at 20% 0%, rgba(0,229,180,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 100%, rgba(124,58,237,0.07) 0%, transparent 60%);
-  pointer-events: none;
-  z-index: 0;
-}
-.grid-bg {
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
-  background-size: 60px 60px;
+  background: radial-gradient(circle at 50% 0%, rgba(0,229,180,0.05) 0%, transparent 50%);
   pointer-events: none;
   z-index: 0;
 }
 
-/* ─── Layout ─── */
-.container { max-width: 760px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
 
 /* ─── Navbar ─── */
 nav {
-  position: sticky;
-  top: 0;
-  z-index: 100;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid var(--border);
-  background: rgba(7,8,15,0.85);
+  background: rgba(10,13,26,0.8);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 .nav-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 20px;
-  max-width: 900px;
-  margin: 0 auto;
-}
-.nav-left {
-  display: flex;
-  align-items: center;
-  gap: 15px;
+  padding: 14px 0;
 }
 .logo {
   display: flex;
@@ -98,544 +73,233 @@ nav {
   text-decoration: none;
 }
 .logo-icon {
-  width: 36px;
-  height: 36px;
+  font-size: 24px;
   background: var(--accent-dim);
-  border: 1px solid rgba(0,229,180,0.3);
-  border-radius: 10px;
+  border: 1px solid rgba(0,229,180,0.2);
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  border-radius: 12px;
 }
-.logo-text { font-size: 20px; font-weight: 700; color: var(--text); }
+.logo-text { font-size: 22px; font-weight: 900; color: var(--text); }
 .logo-text span { color: var(--accent); }
-.nav-badge {
-  font-size: 11px;
-  padding: 3px 10px;
-  border-radius: 99px;
-  background: var(--accent-dim);
-  color: var(--accent);
-  border: 1px solid rgba(0,229,180,0.2);
-  font-weight: 500;
-}
 
 /* ─── Hero ─── */
-.hero {
-  text-align: center;
-  padding: 70px 0 50px;
-}
+.hero { text-align: center; padding: 50px 0 30px; }
 .hero-eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   font-size: 13px;
   color: var(--accent);
-  border: 1px solid rgba(0,229,180,0.25);
+  border: 1px solid rgba(0,229,180,0.2);
   border-radius: 99px;
   padding: 5px 14px;
   background: var(--accent-dim);
-  margin-bottom: 24px;
-  font-weight: 500;
+  margin-bottom: 16px;
 }
 .hero h1 {
-  font-size: clamp(32px, 5vw, 52px);
+  font-size: clamp(28px, 4vw, 44px);
   font-weight: 900;
-  line-height: 1.15;
-  letter-spacing: -0.5px;
-  margin-bottom: 18px;
-  color: var(--text);
+  margin-bottom: 12px;
 }
-.hero h1 .hl {
-  background: linear-gradient(135deg, var(--accent) 0%, #3BFFD6 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-.hero p {
-  font-size: 17px;
-  color: var(--text2);
-  max-width: 520px;
-  margin: 0 auto 36px;
-  line-height: 1.75;
-}
-.features-row {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-.feat-pill {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  color: var(--text2);
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  border-radius: 99px;
-  padding: 6px 14px;
-}
-.feat-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+.hero h1 span { color: var(--accent); }
+.hero p { font-size: 15px; color: var(--text2); max-width: 600px; margin: 0 auto 20px; }
+.features-row { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.feat-pill { font-size: 13px; color: var(--text2); background: var(--bg2); border: 1px solid var(--border); padding: 6px 14px; border-radius: 99px; }
 
-/* ─── Ads Placeholder Styling ─── */
+/* ─── المساحات الإعلانية ─── */
 .ad-space {
   width: 100%;
-  min-height: 90px;
-  background: var(--bg3);
-  border: 1px dashed var(--border3);
+  min-height: 80px;
+  background: rgba(255,255,255,0.02);
+  border: 1px dashed var(--border2);
   border-radius: var(--r);
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--text3);
   font-size: 13px;
-  margin-bottom: 24px;
-  text-align: center;
+  margin: 20px 0;
 }
 
-/* ─── Main Card ─── */
+/* ─── الشبكة الرئيسية (تقسيم الواجهة) ─── */
+.main-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+/* ─── كارت الاستخراج الأساسي ─── */
 .main-card {
   background: var(--bg2);
   border: 1px solid var(--border2);
-  border-radius: 20px;
-  overflow: hidden;
-  margin-bottom: 24px;
-  box-shadow: 0 0 60px rgba(0,0,0,0.5), 0 0 120px rgba(0,229,180,0.04);
+  border-radius: var(--r);
+  padding: 24px;
 }
-.card-header {
-  padding: 22px 24px 18px;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg3);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.card-title {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.card-body { padding: 24px; }
+.section-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
 
-/* ─── URL Input ─── */
-.url-wrap {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 18px;
-}
+.url-wrap { display: flex; gap: 10px; margin-bottom: 20px; }
 .url-input {
-  flex: 1;
-  height: 50px;
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  border-radius: var(--r-sm);
-  padding: 0 16px;
-  font-size: 14px;
-  color: var(--text);
-  font-family: var(--font);
-  outline: none;
-  direction: ltr;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  flex: 1; height: 48px; background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: var(--r-sm); padding: 0 16px; color: var(--text); font-family: var(--font);
+  outline: none; direction: ltr; font-size: 14px;
 }
-.url-input::placeholder { color: var(--text3); }
-.url-input:focus {
-  border-color: rgba(0,229,180,0.5);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
+.url-input:focus { border-color: var(--accent); }
+
 .btn-extract {
-  height: 50px;
-  padding: 0 24px;
-  background: var(--accent);
-  color: #07080F;
-  font-size: 15px;
-  font-weight: 700;
-  font-family: var(--font);
-  border: none;
-  border-radius: var(--r-sm);
-  cursor: pointer;
-  white-space: nowrap;
-  transition: opacity 0.2s, transform 0.1s;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  height: 48px; padding: 0 24px; background: var(--accent); color: #0A0D1A;
+  font-size: 15px; font-weight: 700; border: none; border-radius: var(--r-sm);
+  cursor: pointer; font-family: var(--font); transition: opacity 0.2s;
 }
-.btn-extract:hover { opacity: 0.88; }
-.btn-extract:active { transform: scale(0.97); }
-.btn-extract:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+.btn-extract:hover { opacity: 0.9; }
+.btn-extract:disabled { opacity: 0.4; cursor: not-allowed; }
 
-/* ─── Fallback Manual Box ─── */
-.manual-box {
-  background: var(--bg3);
-  border: 1px solid rgba(0,229,180,0.2);
-  border-radius: var(--r);
-  padding: 16px;
-  margin-bottom: 18px;
-  animation: fadeUp 0.3s ease;
-}
-.manual-box p { font-size: 13px; color: var(--text2); margin-bottom: 10px; }
-.manual-textarea {
-  width: 100%;
-  height: 120px;
-  background: var(--bg);
-  border: 1px solid var(--border2);
-  border-radius: var(--r-sm);
-  padding: 12px;
-  color: var(--text);
-  font-family: var(--font);
-  font-size: 14px;
-  outline: none;
-  resize: vertical;
-  margin-bottom: 10px;
-}
-.manual-textarea:focus { border-color: var(--accent); }
-
-/* ─── Options Row ─── */
-.opts-section {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  padding: 16px 0;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 20px;
-}
-.opt-group { flex: 1; min-width: 180px; }
-.opt-label {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text3);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 8px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-.pill-group { display: flex; gap: 6px; flex-wrap: wrap; }
+/* الخيارات */
+.options-group { margin-bottom: 20px; }
+.opt-label { font-size: 13px; color: var(--text2); margin-bottom: 8px; }
+.pill-group { display: flex; gap: 8px; flex-wrap: wrap; }
 .pill {
-  padding: 6px 14px;
-  font-size: 13px;
-  font-family: var(--font);
-  background: var(--bg3);
-  border: 1px solid var(--border2);
-  border-radius: 99px;
-  color: var(--text2);
-  cursor: pointer;
-  transition: all 0.15s;
+  padding: 6px 16px; font-size: 13px; font-family: var(--font);
+  background: var(--bg3); border: 1px solid var(--border2); color: var(--text2);
+  border-radius: 99px; cursor: pointer;
 }
-.pill:hover { border-color: var(--border3); color: var(--text); }
-.pill.active {
-  background: var(--accent-dim);
-  border-color: rgba(0,229,180,0.4);
-  color: var(--accent);
-  font-weight: 500;
-}
+.pill.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
 
-/* ─── AI Backend ─── */
-.backend-strip {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--r-sm);
-  margin-bottom: 20px;
-  font-size: 13px;
-}
-.pulse { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.pulse-green { background: #00D4AA; box-shadow: 0 0 6px #00D4AA80; }
-.pulse-amber { background: var(--amber); }
-.pulse-gray { background: var(--text3); }
-.backend-info { flex: 1; }
-.backend-name { font-weight: 500; color: var(--text); }
-.backend-sub { color: var(--text2); font-size: 12px; }
-.btn-setup {
-  padding: 4px 12px;
-  font-size: 12px;
-  background: transparent;
-  border: 1px solid var(--border2);
-  border-radius: 99px;
-  color: var(--text2);
-  cursor: pointer;
-  font-family: var(--font);
-}
-.btn-setup:hover { border-color: var(--border3); color: var(--text); }
-
-/* ─── Setup Panel ─── */
-.setup-panel {
-  background: var(--bg3);
-  border: 1px solid var(--border2);
+/* ─── كارت التسجيل الضروري المتوهج ─── */
+.auth-card {
+  background: linear-gradient(135deg, #131833 0%, #1B2246 100%);
+  border: 1px solid rgba(124,58,237,0.3);
   border-radius: var(--r);
+  padding: 28px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 30px var(--purple-glow);
+  position: relative;
   overflow: hidden;
-  margin-bottom: 20px;
 }
-.setup-panel-hd {
-  padding: 14px 18px;
-  background: var(--bg4);
-  border-bottom: 1px solid var(--border);
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.auth-card::before {
+  content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+  background: radial-gradient(circle, rgba(124,58,237,0.1) 0%, transparent 60%);
 }
-.setup-panel-body { padding: 18px; }
-.method { border: 1px solid var(--border2); border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; cursor: pointer; }
-.method.sel { border-color: rgba(0,229,180,0.45); background: var(--accent-dim); }
-.method-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
-.method-desc { font-size: 13px; color: var(--text2); line-height: 1.65; }
-.code { background: var(--bg); border: 1px solid var(--border2); border-radius: 8px; padding: 10px 14px; font-family: 'Courier New', monospace; font-size: 12px; color: var(--accent); direction: ltr; overflow-x: auto; white-space: pre; margin: 8px 0; }
-.setup-inp {
+.auth-title { font-size: 19px; font-weight: 800; color: #FFF; margin-bottom: 8px; }
+.auth-desc { font-size: 13px; color: var(--text2); margin-bottom: 24px; max-width: 260px; line-height: 1.6; }
+
+/* تخصيص زر جوجل ليصبح عريضاً ومطابقاً للصورة */
+.google-btn-container {
   width: 100%;
-  height: 38px;
-  background: var(--bg);
-  border: 1px solid var(--border2);
-  border-radius: 8px;
-  padding: 0 12px;
-  font-size: 13px;
-  color: var(--text);
-  font-family: 'Courier New', monospace;
-  outline: none;
-  direction: ltr;
-  margin-top: 6px;
+  max-width: 260px;
+  display: flex;
+  justify-content: center;
+  background: #FFF;
+  padding: 4px;
+  border-radius: var(--r-sm);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  transition: transform 0.2s;
 }
-.setup-actions { display: flex; gap: 8px; margin-top: 16px; }
-.btn-sm {
-  height: 38px;
-  padding: 0 18px;
-  font-size: 13px;
-  font-family: var(--font);
-  border-radius: 8px;
-  cursor: pointer;
-  border: 1px solid var(--border2);
-  font-weight: 500;
-}
-.btn-sm-pri { background: var(--accent); color: #07080F; border-color: transparent; }
-.btn-sm-sec { background: transparent; color: var(--text2); }
+.google-btn-container:hover { transform: translateY(-2px); }
 
-/* ─── Status Steps ─── */
-.steps-wrap {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 18px;
-  margin-bottom: 16px;
-}
-.step { display: flex; align-items: center; gap: 12px; padding: 7px 0; font-size: 14px; }
-.step-ic {
-  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center; font-size: 13px;
-}
-.s-done .step-ic { background: rgba(0,212,170,0.15); color: var(--accent); border: 1px solid rgba(0,212,170,0.3); }
-.s-active .step-ic { background: rgba(124,58,237,0.15); color: #A78BFA; border: 1px solid rgba(124,58,237,0.3); }
-.s-pend .step-ic { background: var(--bg4); border: 1px solid var(--border2); color: var(--text3); }
-.s-pend .step-lbl { color: var(--text3); }
-.step-lbl { flex: 1; }
-.step-note { font-size: 12px; color: var(--text3); }
-.progress { height: 3px; background: var(--bg4); border-radius: 99px; overflow: hidden; margin-top: 12px; }
-.progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), #3BFFD6); border-radius: 99px; transition: width 0.4s ease; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.spin { display: inline-block; animation: spin 0.9s linear infinite; }
+/* الخطة البديلة */
+.manual-box { background: var(--bg3); border: 1px solid var(--border2); border-radius: var(--r); padding: 16px; margin-top: 16px; }
+.manual-textarea { width: 100%; height: 100px; background: var(--bg); border: 1px solid var(--border2); border-radius: var(--r-sm); padding: 10px; color: var(--text); font-family: var(--font); outline: none; resize: vertical; margin: 8px 0; }
 
-/* ─── Result ─── */
-.result-wrap { animation: fadeUp 0.4s ease; }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 16px; }
-.stat { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; text-align: center; }
-.stat-v { font-size: 22px; font-weight: 700; color: var(--text); }
-.stat-l { font-size: 12px; color: var(--text3); margin-top: 2px; }
-.result-card { background: var(--bg3); border: 1px solid var(--border2); border-radius: var(--r); overflow: hidden; }
-.result-hd { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--border); background: var(--bg4); }
-.result-title { font-size: 14px; font-weight: 500; color: var(--text); display: flex; align-items: center; gap: 8px; min-width: 0; }
-.result-title span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.badge { font-size: 11px; padding: 3px 9px; border-radius: 99px; font-weight: 500; flex-shrink: 0; }
-.badge-green { background: rgba(0,212,170,0.12); color: var(--accent); border: 1px solid rgba(0,212,170,0.25); }
-.badge-blue { background: rgba(124,58,237,0.12); color: #A78BFA; border: 1px solid rgba(124,58,237,0.25); }
-.result-actions { display: flex; gap: 8px; flex-shrink: 0; }
-.btn-action {
-  height: 34px; padding: 0 14px; font-size: 13px; font-family: var(--font); background: var(--bg3);
-  border: 1px solid var(--border2); color: var(--text2); border-radius: 8px; cursor: pointer;
-  display: flex; align-items: center; gap: 6px; font-weight: 500;
-}
-.btn-action:hover { background: var(--bg4); color: var(--text); border-color: var(--border3); }
-.result-body { padding: 20px; max-height: 440px; overflow-y: auto; }
-.tx-text { font-size: 16px; line-height: 2; color: var(--text); white-space: pre-wrap; direction: auto; font-weight: 300; }
+/* الخطأ والنتائج */
+.err-box { background: rgba(255,77,109,0.08); border: 1px solid rgba(255,77,109,0.2); border-radius: var(--r); padding: 14px; margin-top: 16px; color: #FF8098; font-size: 13px; }
+.result-card { background: var(--bg3); border: 1px solid var(--border2); border-radius: var(--r); margin-top: 20px; overflow: hidden; }
+.result-hd { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--bg4); }
+.result-body { padding: 16px; max-height: 300px; overflow-y: auto; white-space: pre-wrap; font-size: 15px; }
 
-/* ─── Error ─── */
-.err-box {
-  background: rgba(255,77,109,0.08);
-  border: 1px solid rgba(255,77,109,0.25);
-  border-radius: var(--r); padding: 16px 18px; margin-bottom: 16px; animation: fadeUp 0.3s ease;
-}
-.err-title { font-size: 14px; font-weight: 600; color: var(--red); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
-.err-msg { font-size: 14px; color: #FF8098; line-height: 1.7; margin-bottom: 12px; }
+footer { border-top: 1px solid var(--border); padding: 20px 0; text-align: center; font-size: 13px; color: var(--text3); margin-top: 4px; }
 
-/* ─── How It Works ─── */
-.how-section { padding: 16px 0 60px; }
-.section-title { font-size: 22px; font-weight: 700; color: var(--text); text-align: center; margin-bottom: 8px; }
-.section-sub { font-size: 15px; color: var(--text2); text-align: center; margin-bottom: 36px; }
-.steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.step-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 22px; text-align: center; }
-.step-num {
-  width: 44px; height: 44px; border-radius: 12px; background: var(--accent-dim);
-  border: 1px solid rgba(0,229,180,0.25); display: flex; align-items: center; justify-content: center;
-  font-size: 20px; font-weight: 900; color: var(--accent); margin: 0 auto 14px;
-}
-.step-card h3 { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
-.step-card p { font-size: 13px; color: var(--text2); line-height: 1.7; }
+.toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: var(--bg4); border: 1px solid var(--border2); color: #FFF; padding: 8px 20px; border-radius: 99px; font-size: 13px; opacity: 0; transition: opacity 0.2s; z-index: 1000; }
+.toast.show { opacity: 1; }
 
-footer { border-top: 1px solid var(--border); padding: 24px 20px; text-align: center; font-size: 13px; color: var(--text3); }
-footer a { color: var(--text2); text-decoration: none; }
-footer a:hover { color: var(--accent); }
-
-.toast {
-  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-  background: var(--bg4); border: 1px solid var(--border2); color: var(--text);
-  padding: 10px 22px; border-radius: 99px; font-size: 14px; font-family: var(--font);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5); opacity: 0; transition: opacity 0.2s, transform 0.2s;
-  pointer-events: none; z-index: 999;
-}
-.toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
-
-@media (max-width: 600px) {
-  .hero { padding: 50px 0 36px; }
+@media (max-width: 768px) {
+  .main-grid { grid-template-columns: 1fr; }
   .url-wrap { flex-direction: column; }
-  .btn-extract { justify-content: center; }
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  .steps-grid { grid-template-columns: 1fr; }
-  .opts-section { flex-direction: column; gap: 14px; }
-  .result-hd { flex-direction: column; align-items: flex-start; gap: 10px; }
 }
 </style>
 </head>
 <body>
-<div class="grid-bg"></div>
 
 <nav>
-  <div class="nav-inner">
-    <div class="nav-left">
-      <a href="#" class="logo">
-        <div class="logo-icon">✦</div>
-        <span class="logo-text">نصّ<span>ص</span></span>
-      </a>
-      
-      <div style="display: inline-block;">
-        <div id="g_id_onload"
-             data-client_id="138500307114-u01vqrpjhu84qui67jv7uspo5ak7b07f.apps.googleusercontent.com"
-             data-context="signin"
-             data-ux_mode="popup"
-             data-callback="handleGoogleSignIn"
-             data-auto_select="true"
-             data-itp_support="true">
-        </div>
-        <div class="g_id_signin" data-type="icon" data-shape="circle" data-theme="filled_dark" data-size="large"></div>
-      </div>
-    </div>
-    <span class="nav-badge">مجاني بالكامل</span>
+  <div class="container nav-inner">
+    <a href="#" class="logo">
+      <div class="logo-icon">🚀</div>
+      <span class="logo-text">نصّ<span>ص</span></span>
+    </a>
   </div>
 </nav>
 
 <div class="container">
   <div class="hero">
     <div class="hero-eyebrow">✦ يعمل مع يوتيوب مباشرةً</div>
-    <h1>استخرج <span class="hl">نص أي فيديو</span><br>وترجمه بنقرة واحدة</h1>
-    <p>الصق رابط الفيديو — يوتيوب يُخرج الترجمة، والذكاء الاصطناعي ينظّفها ويرتّبها لك. بدون تسجيل، بدون مفاتيح API.</p>
+    <h1>استخرج <span>نص أي فيديو</span> وترجمه بنقرة واحدة</h1>
+    <p>الصق رابط الفيديو — يوتيوب يُخرج الترجمة، ونظامنا يقوم بترتيبها لك تلقائياً وبسهولة تامة.</p>
     <div class="features-row">
-      <div class="feat-pill"><span class="dot"></span>جميع اللغات</div>
-      <div class="feat-pill"><span class="dot"></span>ترجمة فورية</div>
-      <div class="feat-pill"><span class="dot"></span>ذكاء اصطناعي محلي</div>
-      <div class="feat-pill"><span class="dot"></span>تنزيل كملف نصي</div>
+      <div class="feat-pill">جميع اللغات</div>
+      <div class="feat-pill">ترجمة فورية</div>
+      <div class="feat-pill">تنزيل كملف نصي</div>
     </div>
   </div>
 
-  <div class="ad-space" id="ad-top">مساحة إعلانية (Banner 728x90)</div>
+  <div class="ad-space">Ads Placeholder</div>
 
-  <div class="main-card">
-    <div class="card-header">
-      <div class="card-title">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent)"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>
-        استخراج النص
-      </div>
-    </div>
-    <div class="card-body">
-
+  <div class="main-grid">
+    
+    <div class="main-card">
+      <div class="section-title">تحميل النص</div>
       <div class="url-wrap">
-        <input class="url-input" id="urlInput" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off" spellcheck="false" />
-        <button class="btn-extract" id="mainBtn" onclick="startProcess()">استخراج</button>
+        <input class="url-input" id="urlInput" placeholder="https://www.youtube.com/watch?v=..." />
+        <button class="btn-extract" id="mainBtn" onclick="startProcess()">تحميل</button>
       </div>
 
-      <div id="manualFallbackBox" class="manual-box" style="display:none">
-        <p>💡 <strong>خطة بديلة:</strong> الصق نص الترجمة الأصلي المأخوذ من يوتيوب يدوياً وسيتولى الذكاء الاصطناعي معالجته وترجمته فوراً:</p>
-        <textarea class="manual-textarea" id="manualTextarea" placeholder="الصق النص أو ملف التسميات التوضيحية هنا..."></textarea>
-        <button class="btn-sm btn-sm-pri" onclick="processManualText()">✓ معالجة النص المكتوب</button>
-      </div>
-
-      <div class="opts-section">
-        <div class="opt-group">
-          <div class="opt-label">ترجمة النص إلى</div>
-          <div class="pill-group">
-            <button class="pill active" data-lang="none" onclick="setLang(this)">بدون ترجمة</button>
-            <button class="pill" data-lang="ar" onclick="setLang(this)">🇮🇶 العربية</button>
-            <button class="pill" data-lang="en" onclick="setLang(this)">🇺🇸 English</button>
-          </div>
-        </div>
-        <div class="opt-group">
-          <div class="opt-label">تنظيف النص بالذكاء الاصطناعي</div>
-          <div class="pill-group">
-            <button class="pill active" data-ai="on" onclick="setAI(this)">تلقائي</button>
-            <button class="pill" data-ai="off" onclick="setAI(this)">بدون ذكاء اصطناعي</button>
-          </div>
+      <div class="options-group">
+        <div class="opt-label">خيارات الترجمة</div>
+        <div class="pill-group">
+          <button class="pill active" data-lang="none" onclick="setLang(this)">بدون ترجمة</button>
+          <button class="pill" data-lang="ar" onclick="setLang(this)">العربية 🇸🇾</button>
+          <button class="pill" data-lang="en" onclick="setLang(this)">English 🇺🇸</button>
         </div>
       </div>
 
-      <div class="backend-strip" id="backendStrip">
-        <div class="pulse pulse-gray" id="bPulse"></div>
-        <div class="backend-info">
-          <div class="backend-name" id="bName">جاري الكشف عن الذكاء الاصطناعي...</div>
-          <div class="backend-sub" id="bSub"></div>
-        </div>
-        <button class="btn-setup" onclick="toggleSetup()">⚙ إعداد</button>
-      </div>
-
-      <div id="setupPanel" style="display:none">
-        <div class="setup-panel">
-          <div class="setup-panel-hd">
-            <span>⚙ إعداد الذكاء الاصطناعي المحلي</span>
-            <button class="btn-setup" onclick="toggleSetup()">✕ إغلاق</button>
-          </div>
-          <div class="setup-panel-body">
-            <div class="method sel" id="m-ollama" onclick="pickMethod('ollama')">
-              <div class="method-title">🦙 Ollama <span class="badge badge-green">موصى به</span></div>
-              <div class="method-desc">شغّل Qwen 2.5 أو Llama 3 محلياً مع تفعيل CORS:</div>
-              <div class="code">OLLAMA_ORIGINS=* ollama serve</div>
-              <input class="setup-inp" id="modelInput" value="qwen2.5:7b" />
-            </div>
-            <div class="method" id="m-chrome" onclick="pickMethod('chrome')">
-              <div class="method-title">🌐 Chrome Built-in AI</div>
-              <div class="method-desc">Gemini Nano المدمج في المتصفح.</div>
-            </div>
-            <div class="setup-actions">
-              <button class="btn-sm btn-sm-pri" onclick="applyBackend()">✓ تطبيق وفحص</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div id="statusArea" style="display:none"></div>
+      <div id="statusArea" style="display:none; font-size: 13px; color: var(--accent);">جاري المعالجة الآن...</div>
       <div id="errArea" style="display:none"></div>
-      <div id="resultArea"></div>
+      
+      <div id="manualFallbackBox" class="manual-box" style="display:none">
+        <div class="opt-label">💡 خطة بديلة: الصق نص الترجمة المأخوذ يدوياً:</div>
+        <textarea class="manual-textarea" id="manualTextarea" placeholder="الصق النص هنا..."></textarea>
+        <button class="pill" onclick="processManualText()">✓ معالجة النص</button>
+      </div>
 
+      <div id="resultArea"></div>
     </div>
+
+    <div class="auth-card">
+      <div class="auth-title">انضم إلينا وحمّل المزيد</div>
+      <div class="auth-desc">سجّل الآن للوصول إلى ميزات إضافية وتجنب قيود وحظر يوتيوب لملفات الترجمة تلقائياً!</div>
+      
+      <div class="google-btn-container">
+        <div id="g_id_onload"
+             data-client_id="138500307114-u01vqrpjhu84qui67jv7uspo5ak7b07f.apps.googleusercontent.com"
+             data-context="signin"
+             data-ux_mode="popup"
+             data-callback="handleGoogleSignIn"
+             data-auto_select="true">
+        </div>
+        <div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline" data-size="large" data-logo_alignment="left"></div>
+      </div>
+    </div>
+
   </div>
 
-  <div class="ad-space" id="ad-bottom">مساحة إعلانية (Banner 728x90)</div>
+  <div class="ad-space">Banner placeholder</div>
 </div>
 
 <footer>
@@ -645,27 +309,14 @@ footer a:hover { color: var(--accent); }
 <div class="toast" id="toast"></div>
 
 <script>
-let aiBackend = null;
-let ollamaModel = 'qwen2.5:7b';
 let targetLang = 'none';
-let useAI = true;
-let selMethod = 'ollama';
-let backendReady = false;
 let globalResultText = '';
 let videoTitleForDownload = 'transcript';
 
-// دالة تخزين توكن المصادقة الصادر من جوجل عند تسجيل الدخول
-function handleGoogleSignIn(response) {
-  const idToken = response.credential;
-  localStorage.setItem('user_google_token', idToken);
-  toast('✓ تم ربط حساب Google بنجاح لتخطي قيود يوتيوب تلقائياً!');
-}
-
 function toast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2200);
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
 }
 
 function setLang(el) {
@@ -674,300 +325,85 @@ function setLang(el) {
   targetLang = el.dataset.lang;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  detectBackend();
-});
-
-function setAI(el) {
-  document.querySelectorAll('[data-ai]').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
-  useAI = el.dataset.ai === 'on';
-}
-
-function toggleSetup() {
-  const p = document.getElementById('setupPanel');
-  p.style.display = p.style.display === 'none' ? 'block' : 'none';
-}
-
-function pickMethod(m) {
-  selMethod = m;
-  document.getElementById('m-ollama').classList.toggle('sel', m === 'ollama');
-  document.getElementById('m-chrome').classList.toggle('sel', m === 'chrome');
-}
-
-async function detectBackend() {
-  const pulse = document.getElementById('bPulse');
-  const name = document.getElementById('bName');
-  const sub = document.getElementById('bSub');
-
-  if (window.ai && window.ai.languageModel) {
-    try {
-      const cap = await window.ai.languageModel.capabilities();
-      if (cap.available !== 'no') {
-        aiBackend = 'chrome-ai';
-        pulse.className = 'pulse pulse-green';
-        name.textContent = 'Chrome Built-in AI (Gemini Nano)';
-        sub.textContent = 'جاهز للاستخدام بدون إنترنت';
-        backendReady = true;
-        return;
-      }
-    } catch(e) {}
-  }
-
-  try {
-    const res = await fetch('http://localhost:11434/api/tags', { signal: AbortSignal.timeout(2000) });
-    if (res.ok) {
-      aiBackend = 'ollama';
-      pulse.className = 'pulse pulse-green';
-      name.textContent = 'Ollama متصل';
-      sub.textContent = 'يعمل محلياً بكفاءة';
-      backendReady = true;
-      return;
-    }
-  } catch(e) {}
-
-  aiBackend = null;
-  backendReady = false;
-  pulse.className = 'pulse pulse-amber';
-  name.textContent = 'لم يُكتشف ذكاء اصطناعي محلي';
-  sub.textContent = 'سيعمل النظام بالتنظيف القياسي أو يمكنك تشغيل Ollama';
-}
-
-async function applyBackend() {
-  ollamaModel = document.getElementById('modelInput').value.trim() || 'qwen2.5:7b';
-  document.getElementById('setupPanel').style.display = 'none';
-  await detectBackend();
-  toast(backendReady ? '✓ تم الاتصال بنجاح' : '⚠ لم يتم العثور على سيرفر الذكاء الاصطناعي');
+function handleGoogleSignIn(response) {
+  localStorage.setItem('user_google_token', response.credential);
+  toast('✓ تم ربط حسابك بنجاح! يمكنك التحميل الآن دون قيود.');
 }
 
 function extractVideoId(url) {
-  const ps = [/[?&]v=([^&#]{11})/,/youtu\.be\/([^?&#]{11})/,/embed\/([^?&#]{11})/,/shorts\/([^?&#]{11})/];
+  const ps = [/[?&]v=([^&#]{11})/,/youtu\.be\/([^?&#]{11})/,/shorts\/([^?&#]{11})/];
   for (const p of ps) { const m = url.match(p); if (m) return m[1]; }
   return null;
 }
 
-function basicCleanup(text) {
-  return text.replace(/\s{2,}/g, ' ').replace(/([.!?؟])\s*/g, '$1\n\n').trim();
-}
-
-async function runAI(prompt) {
-  if (aiBackend === 'chrome-ai') {
-    const session = await window.ai.languageModel.create();
-    const res = await session.prompt(prompt);
-    session.destroy();
-    return res;
-  }
-  if (aiBackend === 'ollama') {
-    const r = await fetch('http://localhost:11434/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model: ollamaModel, prompt, stream: false })
-    });
-    const d = await r.json();
-    return d.response;
-  }
-  throw new Error('لا يوجد ذكاء اصطناعي');
-}
-
-async function aiCleanup(text) {
-  const words = text.split(/\s+/);
-  if (words.length <= 600) {
-    return await runAI(`نظّف النص التالي المستخرج من يوتيوب، صلح التكرار وأضف علامات ترقيم وفقرات منطقية دقيقة. أخرج النص النظيف فقط دون أي مقدمات:\n\n${text}`);
-  }
-  let out = '';
-  for (let i = 0; i < words.length; i += 500) {
-    const chunk = words.slice(i, i + 500).join(' ');
-    out += await runAI(`نظّف ورتب هذا النص وعلامات الترقيم. أخرج النص فقط:\n\n${chunk}`) + '\n\n';
-  }
-  return out.trim();
-}
-
-async function translateMyMemory(text, from, to) {
-  const chunks = [];
-  const sentences = text.match(/[^.!?؟\n]+[.!?؟\n]*/g) || [text];
-  let cur = '';
-  for (const s of sentences) {
-    if ((cur + s).length > 400) { chunks.push(cur.trim()); cur = s; }
-    else cur += s;
-  }
-  if (cur.trim()) chunks.push(cur.trim());
-
-  let out = '';
-  for (let i = 0; i < chunks.length; i++) {
-    updateProg(40 + (i / chunks.length) * 50);
-    const pair = from + '|' + to;
-    const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunks[i])}&langpair=${pair}`;
-    const r = await fetch(url);
-    const d = await r.json();
-    out += (d.responseData?.translatedText || chunks[i]) + ' ';
-  }
-  return out.trim();
-}
-
-function updateProg(pct) {
-  const el = document.getElementById('pFill');
-  if (el) el.style.width = pct + '%';
-}
-
-function renderSteps(steps) {
-  const area = document.getElementById('statusArea');
-  area.style.display = 'block';
-  area.innerHTML = `<div class="steps-wrap">
-    ${steps.map(s => `<div class="step s-${s.state}"><div class="step-ic">${s.state==='done'?'✓':s.state==='active'?'<span class="spin">↻</span>':'○'}</div><span>${s.label}</span></div>`).join('')}
-    <div class="progress"><div class="progress-fill" id="pFill" style="width:5%"></div></div>
-  </div>`;
-}
-
-// ─── العمل التلقائي الرئيسي ───
 async function startProcess() {
-  const urlInp = document.getElementById('urlInput');
+  const urlInp = document.getElementById('urlInput').value.trim();
   const mainBtn = document.getElementById('mainBtn');
   const errArea = document.getElementById('errArea');
   const resArea = document.getElementById('resultArea');
   const manualBox = document.getElementById('manualFallbackBox');
+  const statusArea = document.getElementById('statusArea');
 
   errArea.style.display = 'none';
   manualBox.style.display = 'none';
   resArea.innerHTML = '';
-
-  const vId = extractVideoId(urlInp.value.trim());
-  if (!vId) { showError('رابط غير صحيح', 'تأكد من نسخ رابط فيديو يوتيوب صحيح.'); return; }
+  
+  const vId = extractVideoId(urlInp);
+  if (!vId) { errArea.style.display = 'block'; errArea.innerHTML = '<div class="err-box">⚠ رابط الفيديو غير صحيح!</div>'; return; }
 
   mainBtn.disabled = true;
-  let steps = [{ key: 'fetch', label: 'استخراج النص الأصلي من يوتيوب', state: 'active' }];
-  if (useAI && backendReady) steps.push({ key: 'ai', label: 'تنسيق الذكاء الاصطناعي', state: 'pend' });
-  if (targetLang !== 'none') steps.push({ key: 'trans', label: 'مرحلة الترجمة', state: 'pend' });
-  renderSteps(steps);
+  statusArea.style.display = 'block';
 
-  // استرجاع توكن المستخدم لإرساله في الـ Headers
   const userToken = localStorage.getItem('user_google_token') || '';
 
   try {
     const res = await fetch(`https://backend-production-fe55.up.railway.app/api/transcript?v=${vId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'user-token': userToken // تمرير التوكن لتخطي جدار حماية يوتيوب
-      }
+      headers: { 'user-token': userToken }
     });
     
-    if (!res.ok) throw new Error('هذا الفيديو مقيّد أو يتطلب تسجيل دخول عبر Google لتخطي قيود يوتيوب.');
-    
+    if (!res.ok) throw new Error('فشل التحميل التلقائي: ملف الترجمة موجود لكنه فارغ أو الفيديو مقيد.');
     const data = await res.json();
-    
     if (data.error) throw new Error(data.error);
 
     videoTitleForDownload = data.title || 'transcript';
-    let currentText = data.raw; // استهلاك النص المفرغ بصيغة data.raw
-    
-    steps[0].state = 'done';
+    let text = data.raw;
 
-    if (useAI && backendReady) {
-      steps[1].state = 'active'; renderSteps(steps);
-      currentText = await aiCleanup(currentText);
-      steps[1].state = 'done';
+    if (targetLang !== 'none') {
+      statusArea.textContent = 'جاري ترجمة النص حالياً...';
+      const pair = 'auto|' + targetLang;
+      const tRes = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text.slice(0,400))}&langpair=${pair}`);
+      const tData = await tRes.json();
+      text = tData.responseData?.translatedText || text;
     }
 
-    let transIdx = steps.findIndex(s => s.key === 'trans');
-    if (transIdx !== -1) {
-      steps[transIdx].state = 'active'; renderSteps(steps);
-      currentText = await translateMyMemory(currentText, data.lang || 'en', targetLang);
-      steps[transIdx].state = 'done';
-    }
-
-    document.getElementById('statusArea').style.display = 'none';
-    globalResultText = currentText;
-    renderResult(data.title || 'فيديو يوتيوب');
-
-  } catch(e) {
-    showError('فشل الاستخراج التلقائي', e.message);
-    manualBox.style.display = 'block'; 
+    globalResultText = text;
+    renderResult(videoTitleForDownload);
+  } catch (e) {
+    errArea.style.display = 'block';
+    errArea.innerHTML = `<div class="err-box">⚠ ${e.message}</div>`;
+    manualBox.style.display = 'block';
   } finally {
     mainBtn.disabled = false;
+    statusArea.style.display = 'none';
   }
 }
 
-// ─── معالجة النص يدوياً في حال فشل يوتيوب ───
-async function processManualText() {
-  const rawText = document.getElementById('manualTextarea').value.trim();
-  if (!rawText) { toast('الرجاء لصق نص أولاً!'); return; }
-
-  document.getElementById('errArea').style.display = 'none';
-  let steps = [];
-  if (useAI && backendReady) steps.push({ key: 'ai', label: 'تنسيق وتنظيف النص الذكي', state: 'active' });
-  if (targetLang !== 'none') steps.push({ key: 'trans', label: 'جاري ترجمة النص', state: 'pend' });
-  
-  if(steps.length === 0) {
-    globalResultText = basicCleanup(rawText);
-    renderResult('نص معالج يدوياً');
-    return;
-  }
-
-  renderSteps(steps);
-  let currentText = rawText;
-
-  try {
-    if (useAI && backendReady) {
-      currentText = await aiCleanup(currentText);
-      if(steps[1]) steps[1].state = 'active';
-      steps[0].state = 'done'; renderSteps(steps);
-    }
-    if (targetLang !== 'none') {
-      currentText = await translateMyMemory(currentText, 'auto', targetLang);
-      steps[steps.length-1].state = 'done';
-    }
-    document.getElementById('statusArea').style.display = 'none';
-    document.getElementById('manualFallbackBox').style.display = 'none';
-    globalResultText = currentText;
-    renderResult('نص تم إصلاحه يدوياً');
-  } catch(err) {
-    showError('خطأ أثناء المعالجة اليدوية', err.message);
-  }
-}
-
-function showError(title, msg) {
-  const errArea = document.getElementById('errArea');
-  errArea.style.display = 'block';
-  errArea.innerHTML = `<div class="err-box"><div class="err-title">⚠ ${title}</div><div class="err-msg">${msg}</div></div>`;
-  document.getElementById('statusArea').style.display = 'none';
+function processManualText() {
+  const raw = document.getElementById('manualTextarea').value.trim();
+  if(!raw) return;
+  globalResultText = raw;
+  renderResult('نص مضاف يدوياً');
 }
 
 function renderResult(title) {
-  const resArea = document.getElementById('resultArea');
-  const wordCount = globalResultText.split(/\s+/).filter(w => w.length > 0).length;
-  resArea.innerHTML = `
-    <div class="result-wrap">
-      <div class="stats-grid">
-        <div class="stat"><div class="stat-v">${wordCount}</div><div class="stat-l">عدد الكلمات</div></div>
-        <div class="stat"><div class="stat-v">~${Math.max(1, Math.ceil(wordCount/180))} د</div><div class="stat-l">وقت القراءة</div></div>
-        <div class="stat"><div class="stat-v">${targetLang.toUpperCase()}</div><div class="stat-l">اللغة المستهدفة</div></div>
-        <div class="stat"><div class="stat-v">${backendReady?'AI محلي':'معالج قياسي'}</div><div class="stat-l">طريقة التنسيق</div></div>
+  document.getElementById('resultArea').innerHTML = `
+    <div class="result-card">
+      <div class="result-hd">
+        <span>${title}</span>
+        <button class="pill" onclick="navigator.clipboard.writeText(globalResultText).then(()=>toast('تم النسخ!'))">نسخ النص</button>
       </div>
-      <div class="result-card">
-        <div class="result-hd">
-          <div class="result-title"><span>${title}</span></div>
-          <div class="result-actions">
-            <button class="btn-action" onclick="copyText()">نسخ</button>
-            <button class="btn-action" onclick="downloadTxt()">تنزيل TXT</button>
-          </div>
-        </div>
-        <div class="result-body"><div class="tx-text">${globalResultText}</div></div>
-      </div>
+      <div class="result-body">${globalResultText}</div>
     </div>`;
-}
-
-function copyText() {
-  navigator.clipboard.writeText(globalResultText).then(() => toast('✓ تم نسخ النص إلى الحافظة!'));
-}
-
-function downloadTxt() {
-  const element = document.createElement("a");
-  const file = new Blob([globalResultText], {type: 'text/plain;charset=utf-8'});
-  element.href = URL.createObjectURL(file);
-  element.download = `${videoTitleForDownload}.txt`;
-  document.body.appendChild(element);
-  element.click();
-  document.body.removeChild(element);
 }
 </script>
 </body>
