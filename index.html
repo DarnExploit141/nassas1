@@ -173,13 +173,30 @@ nav {
 }
 .feat-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
 
+/* ─── Ads Placeholder Styling ─── */
+.ad-space {
+  width: 100%;
+  min-height: 90px;
+  background: var(--bg3);
+  border: 1px dashed var(--border3);
+  border-radius: var(--r);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text3);
+  font-size: 13px;
+  margin-bottom: 24px;
+  text-align: center;
+  overflow: hidden;
+}
+
 /* ─── Main Card ─── */
 .main-card {
   background: var(--bg2);
   border: 1px solid var(--border2);
   border-radius: 20px;
   overflow: hidden;
-  margin-bottom: 40px;
+  margin-bottom: 24px;
   box-shadow: 0 0 60px rgba(0,0,0,0.5), 0 0 120px rgba(0,229,180,0.04);
 }
 .card-header {
@@ -511,7 +528,7 @@ nav {
 .err-msg { font-size: 14px; color: #FF8098; line-height: 1.7; }
 
 /* ─── How It Works ─── */
-.how-section { padding: 40px 0 60px; }
+.how-section { padding: 16px 0 60px; }
 .section-title { font-size: 22px; font-weight: 700; color: var(--text); text-align: center; margin-bottom: 8px; }
 .section-sub { font-size: 15px; color: var(--text2); text-align: center; margin-bottom: 36px; }
 .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
@@ -589,7 +606,6 @@ footer a:hover { color: var(--accent); }
 <body>
 <div class="grid-bg"></div>
 
-<!-- Navbar -->
 <nav>
   <div class="nav-inner">
     <a href="#" class="logo">
@@ -600,7 +616,6 @@ footer a:hover { color: var(--accent); }
   </div>
 </nav>
 
-<!-- Hero -->
 <div class="container">
   <div class="hero">
     <div class="hero-eyebrow">✦ يعمل مع يوتيوب مباشرةً</div>
@@ -614,7 +629,10 @@ footer a:hover { color: var(--accent); }
     </div>
   </div>
 
-  <!-- Main Card -->
+  <div class="ad-space" id="ad-top">
+    مساحة إعلانية (Banner 728x90)
+    </div>
+
   <div class="main-card">
     <div class="card-header">
       <div class="card-title">
@@ -624,7 +642,6 @@ footer a:hover { color: var(--accent); }
     </div>
     <div class="card-body">
 
-      <!-- URL Input -->
       <div class="url-wrap">
         <input class="url-input" id="urlInput" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off" spellcheck="false" />
         <button class="btn-extract" id="mainBtn" onclick="startProcess()">
@@ -633,7 +650,6 @@ footer a:hover { color: var(--accent); }
         </button>
       </div>
 
-      <!-- Options -->
       <div class="opts-section">
         <div class="opt-group">
           <div class="opt-label">
@@ -658,7 +674,6 @@ footer a:hover { color: var(--accent); }
         </div>
       </div>
 
-      <!-- Backend Strip -->
       <div class="backend-strip" id="backendStrip">
         <div class="pulse pulse-gray" id="bPulse"></div>
         <div class="backend-info">
@@ -668,7 +683,6 @@ footer a:hover { color: var(--accent); }
         <button class="btn-setup" onclick="toggleSetup()">⚙ إعداد</button>
       </div>
 
-      <!-- Setup Panel -->
       <div id="setupPanel" style="display:none">
         <div class="setup-panel">
           <div class="setup-panel-hd">
@@ -707,19 +721,19 @@ chrome://flags/#prompt-api-for-gemini-nano</div>
         </div>
       </div>
 
-      <!-- Status -->
       <div id="statusArea" style="display:none"></div>
 
-      <!-- Error -->
       <div id="errArea" style="display:none"></div>
 
-      <!-- Result -->
       <div id="resultArea"></div>
 
     </div>
   </div>
 
-  <!-- How It Works -->
+  <div class="ad-space" id="ad-bottom">
+    مساحة إعلانية (Banner 728x90)
+    </div>
+
   <div class="how-section">
     <div class="section-title">كيف يعمل؟</div>
     <div class="section-sub">ثلاث خطوات فقط للحصول على النص الكامل</div>
@@ -743,7 +757,6 @@ chrome://flags/#prompt-api-for-gemini-nano</div>
   </div>
 </div>
 
-<!-- Footer -->
 <footer>
   <div>نصّص — مجاني ومفتوح المصدر · يعمل مباشرة في المتصفح</div>
   <div style="margin-top:6px">لا يُجمع أي بيانات · <a href="https://ollama.com" target="_blank">Ollama</a> · <a href="https://mymemory.translated.net" target="_blank">MyMemory API</a></div>
@@ -850,59 +863,40 @@ function extractVideoId(url) {
   return null;
 }
 
-// ─── Fetch Transcript ───
+// ─── Fetch Transcript via Railway Backend ───
 async function fetchTranscript(videoId) {
-  const proxy = 'https://corsproxy.io/?';
-  const res = await fetch(proxy + encodeURIComponent('https://www.youtube.com/watch?v=' + videoId));
-  if (!res.ok) throw new Error('تعذّر الاتصال بيوتيوب. تحقق من اتصالك بالإنترنت.');
-  const html = await res.text();
-
-  let title = null;
-  const tm = html.match(/<title>(.+?)<\/title>/);
-  if (tm) title = tm[1].replace(' - YouTube','').trim();
-
-  const tm2 = html.match(/"captionTracks":(\[[\s\S]*?\])/);
-  if (!tm2) throw new Error('لا توجد ترجمة لهذا الفيديو.\nتأكد أن الفيديو يحتوي على ترجمة يدوية أو تلقائية.');
-
-  let tracks;
-  try { tracks = JSON.parse(tm2[1]); } catch(e) { throw new Error('خطأ في قراءة بيانات الترجمة.'); }
-  if (!tracks || tracks.length === 0) throw new Error('لا توجد ترجمة لهذا الفيديو.');
-
-  const track = tracks.find(t => t.languageCode === 'ar') ||
-                tracks.find(t => t.languageCode && t.languageCode.startsWith('ar')) ||
-                tracks.find(t => t.languageCode === 'en') ||
-                tracks[0];
-
-  const cr = await fetch(proxy + encodeURIComponent(track.baseUrl));
-  const xml = await cr.text();
-  const doc = new DOMParser().parseFromString(xml, 'text/xml');
-  const els = doc.getElementsByTagName('text');
-
-  let raw = '';
-  for (const el of els) {
-    let t = el.textContent
-      .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&#39;/g,"'").replace(/&quot;/g,'"')
-      .replace(/<[^>]+>/g,'').replace(/\[.*?\]/g,'').trim();
-    if (t) raw += t + ' ';
+  // ⚠️ لا تنسَ تغيير هذا الرابط برابط سيرفرك الخاص من Railway
+  const backendUrl = 'backend-production-fe55.up.railway.app'; 
+  
+  const res = await fetch(`${backendUrl}/api/transcript?v=${videoId}`);
+  
+  if (!res.ok) {
+    const errData = await res.json().catch(() => ({}));
+    throw new Error(errData.error || 'تعذّر الاتصال بالسيرفر الخلفي.');
   }
-  if (!raw.trim()) throw new Error('الترجمة موجودة لكنها فارغة.');
-  return { raw: raw.trim(), title, lang: track.languageCode || 'und', langName: track.name?.simpleText || track.languageCode || '?' };
+  
+  const data = await res.json();
+  return data;
 }
 
 // ─── Basic Cleanup (no AI) ───
 function basicCleanup(text) {
   return text
-    .replace(/(\b\w+\b)(\s+\1){2,}/gi, '$1')
+    .replace(/(\w+)(\s+){2,}/gi, '$1')
     .replace(/([.!?])\s*/g, '$1 ')
     .replace(/\s{2,}/g, ' ')
-    .replace(/([.!?؟!]) ([A-ZА-Яأ-ي])/g, '$1\n\n$2')
+    .replace(/([.!?؟!]) ([A-ZА-Яأ-ي])/g, '$1
+
+$2')
     .trim();
 }
 
 // ─── MyMemory Translation ───
 async function translateMyMemory(text, from, to) {
   const chunks = [];
-  const sentences = text.match(/[^.!?؟\n]+[.!?؟\n]*/g) || [text];
+  const sentences = text.match(/[^.!?؟
+]+[.!?؟
+]*/g) || [text];
   let cur = '';
   for (const s of sentences) {
     if ((cur + s).length > 450) { if (cur.trim()) chunks.push(cur.trim()); cur = s; }
@@ -952,14 +946,20 @@ async function aiCleanup(text) {
   const words = text.split(/\s+/);
   const chunkSize = 700;
   if (words.length <= chunkSize) {
-    return await runAI(`نظّف هذا النص المستخرج من ترجمة فيديو: أضف علامات الترقيم، صحح الكلمات المكررة، قسّمه إلى فقرات منطقية. لا تحذف أي محتوى. النص فقط بدون تعليقات:\n\n${text}`);
+    return await runAI(`نظّف هذا النص المستخرج من ترجمة فيديو: أضف علامات الترقيم، صحح الكلمات المكررة، قسّمه إلى فقرات منطقية. لا تحذف أي محتوى. النص فقط بدون تعليقات:
+
+${text}`);
   }
   let out = '';
   const chunks = [];
   for (let i = 0; i < words.length; i += chunkSize) chunks.push(words.slice(i, i + chunkSize).join(' '));
   for (let i = 0; i < chunks.length; i++) {
     updateProg(10 + (i / chunks.length) * 55);
-    out += await runAI(`نظّف هذا النص من ترجمة فيديو وأضف علامات الترقيم وقسّمه لفقرات. النص فقط:\n\n${chunks[i]}`) + '\n\n';
+    out += await runAI(`نظّف هذا النص من ترجمة فيديو وأضف علامات الترقيم وقسّمه لفقرات. النص فقط:
+
+${chunks[i]}`) + '
+
+';
   }
   return out.trim();
 }
@@ -1037,11 +1037,15 @@ async function startProcess() {
             const srcLang = detected[0]?.detectedLanguage || data.lang;
             const translator = await window.translation.createTranslator({ sourceLanguage: srcLang, targetLanguage: targetLang });
             if (typeof translator.ready !== 'undefined') await translator.ready;
-            const parts = cleaned.split('\n\n').filter(Boolean);
+            const parts = cleaned.split('
+
+').filter(Boolean);
             let out = '';
             for (let i = 0; i < parts.length; i++) {
               updateProg(10 + (i / parts.length) * 85);
-              out += await translator.translate(parts[i]) + '\n\n';
+              out += await translator.translate(parts[i]) + '
+
+';
             }
             final = out.trim();
             wasTranslated = true;
@@ -1072,7 +1076,8 @@ async function startProcess() {
     document.getElementById('errArea').style.display = 'block';
     document.getElementById('errArea').innerHTML = `<div class="err-box">
       <div class="err-title">⚠ خطأ</div>
-      <div class="err-msg">${err.message.replace(/\n/g,'<br>')}</div>
+      <div class="err-msg">${err.message.replace(/
+/g,'<br>')}</div>
     </div>`;
     document.getElementById('mainBtn').disabled = false;
   }
@@ -1081,7 +1086,9 @@ async function startProcess() {
 // ─── Show Result ───
 function showResult(text, data, wasTranslated) {
   const wc = text.split(/\s+/).filter(Boolean).length;
-  const pc = text.split(/\n\n+/).filter(Boolean).length;
+  const pc = text.split(/
+
++/).filter(Boolean).length;
   const mins = Math.round(wc / 200) || 1;
   const badge = wasTranslated
     ? `<span class="badge badge-blue">${targetLang === 'ar' ? 'مترجم للعربية' : 'Translated to English'}</span>`
@@ -1106,7 +1113,7 @@ function showResult(text, data, wasTranslated) {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             نسخ
           </button>
-          <button class="btn-action" onclick="downloadResult('${(data.title || 'transcript').replace(/'/g,"\\'")}')">
+          <button class="btn-action" onclick="downloadResult('${(data.title || 'transcript').replace(/'/g,"\'")}')">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7,10 12,15 17,10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             تنزيل
           </button>
@@ -1130,7 +1137,7 @@ function downloadResult(title) {
   const blob = new Blob([el.textContent], { type: 'text/plain;charset=utf-8' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = (title || 'transcript').replace(/[^\w\u0600-\u06FF\s-]/g,'') + '.txt';
+  a.download = (title || 'transcript').replace(/[^\w؀-ۿ\s-]/g,'') + '.txt';
   a.click();
   URL.revokeObjectURL(a.href);
   toast('✓ جاري التنزيل');
