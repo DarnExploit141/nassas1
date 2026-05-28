@@ -866,7 +866,7 @@ function extractVideoId(url) {
 // ─── Fetch Transcript via Railway Backend ───
 async function fetchTranscript(videoId) {
   // ⚠️ لا تنسَ تغيير هذا الرابط برابط سيرفرك الخاص من Railway
-  const backendUrl = 'backend-production-fe55.up.railway.app'; 
+  const backendUrl = 'https://backend-production-fe55.up.railway.app'; 
   
   const res = await fetch(`${backendUrl}/api/transcript?v=${videoId}`);
   
