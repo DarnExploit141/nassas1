@@ -1,3 +1,10 @@
+هذا هو ملف الفرونت إند (`index.html`) الخاص بمشروعك "نصّص". الكود منسق وجميل جداً بستايل عصري (Dark Mode).
+
+لقد قمت بدمج **نظام تسجيل الدخول بـ Google المطور (OAuth2)** داخل ملفك، وقمت بتحديث روابط جلب البيانات لتتوافق مع السيرفر الخلفي الجديد الذي يستقبل الـ `user-token` ليفك حظر يوتيوب تلقائياً، مع معالجة الاستجابة بالشكل الصحيح (`data.raw` و `data.title`).
+
+إليك الكود الكامل والمعدل لملف **`index.html`** جاهزاً للنسخ واللصق مباشرة في مشروعك:
+
+```html
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head>
@@ -8,6 +15,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root {
   --bg: #07080F;
@@ -518,6 +526,19 @@ footer a:hover { color: var(--accent); }
       <div class="logo-icon">✦</div>
       <span class="logo-text">نصّ<span>ص</span></span>
     </a>
+    
+    <div style="display: inline-block; margin-inline-end: 15px;">
+      <div id="g_id_onload"
+           data-client_id="138500307114-u01vqrpjhu84qui67jv7uspo5ak7b07f.apps.googleusercontent.com"
+           data-context="signin"
+           data-ux_mode="popup"
+           data-callback="handleGoogleSignIn"
+           data-auto_select="true"
+           data-itp_support="true">
+      </div>
+      <div class="g_id_signin" data-type="icon" data-shape="circle" data-theme="filled_dark" data-size="large"></div>
+    </div>
+
     <span class="nav-badge">مجاني بالكامل</span>
   </div>
 </nav>
@@ -633,6 +654,13 @@ let selMethod = 'ollama';
 let backendReady = false;
 let globalResultText = '';
 let videoTitleForDownload = 'transcript';
+
+// دالة استقبال التوكن عند تسجيل دخول المستخدم عبر جوجل
+function handleGoogleSignIn(response) {
+  const idToken = response.credential;
+  localStorage.setItem('user_google_token', idToken);
+  toast('✓ تم ربط حساب Google بنجاح لتخطي قيود يوتيوب تلقائياً!');
+}
 
 function toast(msg) {
   const t = document.getElementById('toast');
@@ -812,13 +840,23 @@ async function startProcess() {
   if (targetLang !== 'none') steps.push({ key: 'trans', label: 'مرحلة الترجمة', state: 'pend' });
   renderSteps(steps);
 
+  // جلب التوكن الخاص بالمستخدم المخزن في الـ localStorage لإرساله للسيرفر الخلفي
+  const userGoogleToken = localStorage.getItem('user_google_token') || '';
+
   try {
-    const res = await fetch(`https://backend-production-fe55.up.railway.app/api/transcript?v=${vId}`);
-    if (!res.ok) throw new Error('هذا الفيديو مقيّد أو يتطلب تسجيل دخول ولا يمكن استخراج ترجمته آلياً.');
-    
+    const res = await fetch(`https://backend-production-fe55.up.railway.app/api/transcript?v=${vId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'user-token': userGoogleToken // إرفاق الهوية لتجاوز مشكلة الكوكيز وحظر السيرفرات
+      }
+    });
+
     const data = await res.json();
+    if (data.error) throw new Error(data.error);
+
     videoTitleForDownload = data.title || 'transcript';
-    let currentText = data.transcript.map(i => i.text).join(' ');
+    let currentText = data.raw; // استلام النص المفرغ والنظيف من السيرفر الخلفي
     
     steps[0].state = 'done';
 
@@ -831,7 +869,7 @@ async function startProcess() {
     let transIdx = steps.findIndex(s => s.key === 'trans');
     if (transIdx !== -1) {
       steps[transIdx].state = 'active'; renderSteps(steps);
-      currentText = await translateMyMemory(currentText, data.languageCode || 'en', targetLang);
+      currentText = await translateMyMemory(currentText, data.lang || 'en', targetLang);
       steps[transIdx].state = 'done';
     }
 
@@ -841,7 +879,7 @@ async function startProcess() {
 
   } catch(e) {
     showError('فشل الاستخراج التلقائي', e.message);
-    manualBox.style.display = 'block'; // إظهار الصندوق اليدوي للمستخدم لإنقاذ الموقف
+    manualBox.style.display = 'block'; 
   } finally {
     mainBtn.disabled = false;
   }
@@ -917,17 +955,20 @@ function renderResult(title) {
 }
 
 function copyText() {
-  navigator.clipboard.writeText(globalResultText).then(() => toast('✓ تم النسخ'));
+  navigator.clipboard.writeText(globalResultText).then(() => toast('✓ تم نسخ النص إلى الحافظة!'));
 }
 
 function downloadTxt() {
-  const blob = new Blob([globalResultText], { type: 'text/plain;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = `${videoTitleForDownload}.txt`;
-  a.click();
-  toast('✓ بدأ التحميل');
+  const element = document.createElement("a");
+  const file = new Blob([globalResultText], {type: 'text/plain;charset=utf-8'});
+  element.href = URL.createObjectURL(file);
+  element.download = `${videoTitleForDownload}.txt`;
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
 }
 </script>
 </body>
 </html>
+
+```
