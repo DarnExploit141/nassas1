@@ -465,9 +465,8 @@ async function translateAll(text, srcLang) {
   if (cur.trim()) chunks.push(cur.trim());
 
   // srcLang: 'und' → 'autodetect' ، أي قيمة فارغة → 'autodetect'
-  const src  = (!srcLang || srcLang === 'und') ? 'autodetect' : srcLang;
+const src = (srcLang && srcLang !== 'und' && srcLang !== 'none') ? srcLang : 'en';
   const pair = `${src}|${targetLang}`;
-
   let out = '';
   for (let i = 0; i < chunks.length; i++) {
     setProgress(30 + (i / chunks.length) * 65);
