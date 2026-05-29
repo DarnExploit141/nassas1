@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nassas</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23111827'/%3E%3Crect x='8' y='8' width='84' height='84' rx='18' fill='rgba(0,229,180,0.15)' stroke='rgba(0,229,180,0.4)' stroke-width='2'/%3E%3Ctext x='50' y='68' text-anchor='middle' font-size='52' fill='%2300E5B4'%3E%E2%9C%A6%3C/text%3E%3C/svg%3E">
+<title>نصّص — استخراج وترجمة نصوص يوتيوب</title>
 <meta name="description" content="استخرج النص الكامل من أي فيديو يوتيوب وترجمه بنقرة واحدة — مجاناً">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -33,40 +32,42 @@
 html { scroll-behavior:smooth; }
 body { font-family:var(--font); background:var(--bg); color:var(--text); min-height:100vh; line-height:1.6; }
 body::before { content:''; position:fixed; inset:0; background:radial-gradient(circle at 50% 0%,rgba(0,229,180,0.05) 0%,transparent 50%); pointer-events:none; z-index:0; }
+
 .container { max-width:800px; margin:0 auto; padding:0 20px; position:relative; z-index:1; }
 
-/* Navbar */
+/* ── Navbar ── */
 nav { backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:1px solid var(--border); background:rgba(10,13,26,0.85); position:sticky; top:0; z-index:100; }
 .nav-inner { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; max-width:900px; margin:0 auto; }
 .logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
 .logo-icon { width:36px; height:36px; background:var(--accent-dim); border:1px solid rgba(0,229,180,0.3); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; }
-.logo-text { font-size:20px; font-weight:900; color:var(--text); letter-spacing:-0.5px; }
+.logo-text { font-size:20px; font-weight:900; color:var(--text); }
+.logo-text span { color:var(--accent); }
 .nav-tag { font-size:12px; padding:3px 10px; border-radius:99px; background:var(--accent-dim); color:var(--accent); border:1px solid rgba(0,229,180,0.2); }
 
-/* Hero */
+/* ── Hero ── */
 .hero { text-align:center; padding:52px 0 36px; }
 .eyebrow { display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--accent); border:1px solid rgba(0,229,180,0.2); border-radius:99px; padding:5px 14px; background:var(--accent-dim); margin-bottom:20px; }
 .hero h1 { font-size:clamp(28px,4.5vw,46px); font-weight:900; line-height:1.2; margin-bottom:14px; }
 .hero h1 .hl { background:linear-gradient(135deg,var(--accent),#3BFFD6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
 .hero p { font-size:16px; color:var(--text2); max-width:540px; margin:0 auto 28px; }
 
-/* Ads */
+/* ── Ads ── */
 .ad-space { width:100%; min-height:80px; background:rgba(255,255,255,0.02); border:1px dashed var(--border2); border-radius:var(--r); display:flex; align-items:center; justify-content:center; color:var(--text3); font-size:13px; margin:18px 0; }
 
-/* Card */
+/* ── Main Card ── */
 .card { background:var(--bg2); border:1px solid var(--border2); border-radius:20px; overflow:hidden; margin-bottom:24px; box-shadow:0 0 60px rgba(0,0,0,0.4); }
 .card-hd { padding:18px 24px; border-bottom:1px solid var(--border); background:var(--bg3); display:flex; align-items:center; justify-content:space-between; }
 .card-title { font-size:15px; font-weight:700; color:var(--text); display:flex; align-items:center; gap:8px; }
 .card-body { padding:24px; }
 
-/* Auth Strip */
+/* ── Auth Strip ── */
 .auth-strip { display:flex; align-items:center; gap:12px; padding:10px 14px; margin-bottom:20px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--r-sm); font-size:13px; }
 .auth-strip .info { flex:1; color:var(--text2); }
 .auth-user { font-weight:600; color:var(--accent); }
 .btn-signout { padding:4px 12px; font-size:12px; cursor:pointer; font-family:var(--font); background:transparent; border:1px solid rgba(255,77,109,0.3); border-radius:99px; color:var(--red); transition:all .15s; }
 .btn-signout:hover { background:rgba(255,77,109,0.08); }
 
-/* URL Input */
+/* ── URL Input ── */
 .url-wrap { display:flex; gap:10px; margin-bottom:20px; }
 .url-input { flex:1; height:50px; background:var(--bg3); border:1px solid var(--border2); border-radius:var(--r-sm); padding:0 16px; font-size:14px; color:var(--text); font-family:var(--font); outline:none; direction:ltr; transition:border-color .2s,box-shadow .2s; }
 .url-input::placeholder { color:var(--text3); }
@@ -76,33 +77,34 @@ nav { backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bot
 .btn-go:active { transform:scale(.97); }
 .btn-go:disabled { opacity:.35; cursor:not-allowed; transform:none; }
 
-/* Lang Pills */
+/* ── Lang Pills ── */
 .opt-label { font-size:12px; font-weight:500; color:var(--text3); text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px; }
 .pill-group { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
 .pill { padding:7px 16px; font-size:13px; font-family:var(--font); background:var(--bg3); border:1px solid var(--border2); border-radius:99px; color:var(--text2); cursor:pointer; transition:all .15s; }
-.pill:hover { color:var(--text); }
+.pill:hover { border-color:var(--border2); color:var(--text); }
 .pill.active { background:var(--accent-dim); border-color:rgba(0,229,180,0.4); color:var(--accent); font-weight:500; }
 
-/* Steps */
+/* ── Steps ── */
 .steps-wrap { background:var(--bg3); border:1px solid var(--border); border-radius:var(--r); padding:16px; margin-bottom:14px; }
 .step { display:flex; align-items:center; gap:12px; padding:6px 0; font-size:14px; }
 .step-ic { width:26px; height:26px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:12px; }
 .s-done   .step-ic { background:rgba(0,212,170,.15); color:var(--accent); border:1px solid rgba(0,212,170,.3); }
 .s-active .step-ic { background:rgba(245,158,11,.1); color:var(--amber); border:1px solid rgba(245,158,11,.3); }
 .s-pend   .step-ic { background:var(--bg4); border:1px solid var(--border2); color:var(--text3); }
-.s-pend .step-lbl { color:var(--text3); }
+.s-pend  .step-lbl { color:var(--text3); }
 .step-lbl { flex:1; }
+.step-note { font-size:12px; color:var(--text3); }
 .prog-bar { height:3px; background:var(--bg4); border-radius:99px; overflow:hidden; margin-top:10px; }
 .prog-fill { height:100%; border-radius:99px; background:linear-gradient(90deg,var(--accent),#3BFFD6); transition:width .35s ease; }
 @keyframes spin { to { transform:rotate(360deg); } }
 .spin { display:inline-block; animation:spin .9s linear infinite; }
 
-/* Errors */
+/* ── Errors ── */
 .err-box { background:rgba(255,77,109,.08); border:1px solid rgba(255,77,109,.25); border-radius:var(--r); padding:16px 18px; margin-bottom:14px; }
 .err-title { font-size:14px; font-weight:600; color:var(--red); margin-bottom:6px; }
-.err-msg { font-size:13px; color:#FF8098; line-height:1.75; white-space:pre-line; }
+.err-msg { font-size:13px; color:#FF8098; line-height:1.75; }
 
-/* Manual Fallback */
+/* ── Manual Fallback ── */
 .manual-box { background:var(--bg3); border:1px solid var(--border2); border-radius:var(--r); padding:18px; margin-bottom:14px; }
 .manual-box .label { font-size:14px; font-weight:600; color:var(--text); margin-bottom:4px; }
 .manual-box .sub { font-size:13px; color:var(--text2); margin-bottom:10px; }
@@ -112,7 +114,7 @@ nav { backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bot
 .btn-pri { background:var(--accent); color:#0A0D1A; border:none; }
 .btn-pri:hover { opacity:.85; }
 
-/* Result */
+/* ── Result ── */
 @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
 .result-wrap { animation:fadeUp .35s ease; }
 .stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px; }
@@ -120,42 +122,49 @@ nav { backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bot
 .stat-v { font-size:20px; font-weight:700; color:var(--text); }
 .stat-l { font-size:12px; color:var(--text3); margin-top:2px; }
 .result-card { background:var(--bg3); border:1px solid var(--border2); border-radius:var(--r); overflow:hidden; }
-.result-card-hd { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; background:var(--bg4); border-bottom:1px solid var(--border); flex-wrap:wrap; gap:8px; }
-.result-card-title { font-size:14px; font-weight:500; color:var(--text); flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0; }
-.result-actions { display:flex; gap:8px; flex-shrink:0; flex-wrap:wrap; }
+.result-card-hd { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; background:var(--bg4); border-bottom:1px solid var(--border); }
+.result-card-title { font-size:14px; font-weight:500; color:var(--text); flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.result-actions { display:flex; gap:8px; flex-shrink:0; }
 .btn-action { height:32px; padding:0 14px; font-size:13px; font-family:var(--font); background:var(--bg3); border:1px solid var(--border2); color:var(--text2); border-radius:8px; cursor:pointer; transition:all .15s; }
 .btn-action:hover { background:var(--bg4); color:var(--text); }
-.btn-action.active { background:var(--accent-dim); border-color:rgba(0,229,180,0.4); color:var(--accent); }
-.result-body { padding:20px; max-height:480px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--bg4) transparent; }
+.result-body { padding:20px; max-height:420px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--bg4) transparent; }
 .result-body::-webkit-scrollbar { width:4px; }
 .result-body::-webkit-scrollbar-thumb { background:var(--bg4); border-radius:99px; }
+.tx-text { font-size:16px; line-height:2; color:var(--text); white-space:pre-wrap; direction:auto; font-weight:300; }
 
-/* Normal mode */
-.tx-text { font-size:15px; line-height:1.9; color:var(--text); white-space:pre-wrap; direction:auto; font-weight:300; }
+/* ── Paragraph Mode ── */
+.tx-para { font-size:16px; line-height:2; color:var(--text); direction:auto; font-weight:300; }
+.tx-para p { margin-bottom:1.4em; }
+.tx-para p:last-child { margin-bottom:0; }
 
-/* Paragraph mode */
-.tx-paragraph { direction:auto; }
-.tx-paragraph p {
-  font-size:17px;
-  line-height:2.1;
-  color:var(--text);
-  font-weight:400;
-  text-align:justify;
-  margin-bottom:18px;
-  padding:16px 20px;
-  background:var(--bg4);
-  border-radius:10px;
-  border-right:3px solid var(--accent);
+/* Toggle switch */
+.para-toggle { display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; }
+.para-toggle-label { font-size:13px; color:var(--text2); white-space:nowrap; }
+.para-toggle-label.active { color:var(--accent); font-weight:500; }
+.toggle-sw { position:relative; width:36px; height:20px; flex-shrink:0; }
+.toggle-sw input { opacity:0; width:0; height:0; position:absolute; }
+.toggle-slider {
+  position:absolute; inset:0; border-radius:99px;
+  background:var(--bg4); border:1px solid var(--border2);
+  transition:background .2s;
 }
-.tx-paragraph p:last-child { margin-bottom:0; }
+.toggle-slider::before {
+  content:''; position:absolute;
+  width:14px; height:14px; border-radius:50%;
+  left:2px; top:2px;
+  background:var(--text3);
+  transition:transform .2s, background .2s;
+}
+.toggle-sw input:checked + .toggle-slider { background:var(--accent-dim); border-color:rgba(0,229,180,0.4); }
+.toggle-sw input:checked + .toggle-slider::before { transform:translateX(16px); background:var(--accent); }
 
-/* Auth Card */
+/* ── Auth Card ── */
 .auth-card { background:linear-gradient(135deg,#131833 0%,#1B2246 100%); border:1px solid rgba(0,229,180,0.15); border-radius:var(--r); padding:28px; text-align:center; margin-bottom:24px; }
 .auth-card h3 { font-size:17px; font-weight:800; color:#FFF; margin-bottom:8px; }
 .auth-card p { font-size:13px; color:var(--text2); margin-bottom:20px; line-height:1.6; }
 .g-wrap { display:inline-flex; justify-content:center; background:#FFF; padding:4px; border-radius:8px; }
 
-/* How It Works */
+/* ── How It Works ── */
 .how { padding:4px 0 50px; }
 .how-title { font-size:20px; font-weight:700; text-align:center; margin-bottom:6px; }
 .how-sub { font-size:14px; color:var(--text2); text-align:center; margin-bottom:28px; }
@@ -169,14 +178,17 @@ footer { border-top:1px solid var(--border); padding:20px; text-align:center; fo
 footer a { color:var(--text2); text-decoration:none; }
 footer a:hover { color:var(--accent); }
 
+/* ── Toast ── */
 .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--bg4); border:1px solid var(--border2); color:var(--text); padding:9px 22px; border-radius:99px; font-size:14px; font-family:var(--font); box-shadow:0 8px 32px rgba(0,0,0,.5); opacity:0; transition:opacity .2s,transform .2s; pointer-events:none; z-index:999; }
 .toast.show { opacity:1; transform:translateX(-50%) translateY(-4px); }
 
 @media(max-width:600px){
   .hero{padding:40px 0 28px}
   .url-wrap{flex-direction:column}
+  .btn-go{text-align:center}
   .stats-row{grid-template-columns:repeat(2,1fr)}
   .how-grid{grid-template-columns:1fr}
+  .result-card-hd{flex-direction:column;align-items:flex-start;gap:8px}
 }
 </style>
 </head>
@@ -186,7 +198,7 @@ footer a:hover { color:var(--accent); }
   <div class="nav-inner">
     <a href="#" class="logo">
       <div class="logo-icon">✦</div>
-      <span class="logo-text">Nassas</span>
+      <span class="logo-text">نصّ<span>ص</span></span>
     </a>
     <span class="nav-tag">مجاني بالكامل</span>
   </div>
@@ -194,6 +206,7 @@ footer a:hover { color:var(--accent); }
 
 <div class="container">
 
+  <!-- Hero -->
   <div class="hero">
     <div class="eyebrow">✦ يعمل مع يوتيوب مباشرةً</div>
     <h1>استخرج <span class="hl">نص أي فيديو</span><br>وترجمه بنقرة واحدة</h1>
@@ -202,6 +215,7 @@ footer a:hover { color:var(--accent); }
 
   <div class="ad-space">مساحة إعلانية</div>
 
+  <!-- Main Card -->
   <div class="card">
     <div class="card-hd">
       <div class="card-title">
@@ -211,6 +225,7 @@ footer a:hover { color:var(--accent); }
     </div>
     <div class="card-body">
 
+      <!-- Auth Strip -->
       <div class="auth-strip" id="authStrip">
         <div class="info" id="authInfo">سجّل دخولك لحفظ تفضيلاتك ودعم استقرار الخادم</div>
         <div id="gSignInWrap">
@@ -228,6 +243,7 @@ footer a:hover { color:var(--accent); }
         </div>
       </div>
 
+      <!-- URL Input -->
       <div class="url-wrap">
         <input class="url-input" id="urlInput"
                placeholder="https://www.youtube.com/watch?v=..."
@@ -235,6 +251,7 @@ footer a:hover { color:var(--accent); }
         <button class="btn-go" id="mainBtn" onclick="startProcess()">استخراج</button>
       </div>
 
+      <!-- Lang Pills -->
       <div class="opt-label">ترجمة النص إلى</div>
       <div class="pill-group" id="langGroup">
         <button class="pill active" data-lang="none">بدون ترجمة</button>
@@ -245,9 +262,11 @@ footer a:hover { color:var(--accent); }
         <button class="pill" data-lang="tr">🇹🇷 Türkçe</button>
       </div>
 
+      <!-- Status / Error / Result areas -->
       <div id="statusArea" style="display:none"></div>
       <div id="errArea"    style="display:none"></div>
 
+      <!-- Manual Fallback -->
       <div id="manualBox" class="manual-box" style="display:none">
         <div class="label">💡 الخطة البديلة — الصق النص يدوياً</div>
         <div class="sub">افتح الفيديو في يوتيوب ← فعّل الترجمة ← انسخ النص ← الصقه هنا</div>
@@ -261,8 +280,9 @@ footer a:hover { color:var(--accent); }
 
   <div class="ad-space">مساحة إعلانية</div>
 
+  <!-- Auth Card (لمن لم يسجّل بعد) -->
   <div class="auth-card" id="authCardBottom">
-    <h3>انضم إلى مجتمع Nassas</h3>
+    <h3>انضم إلى مجتمع نصّص</h3>
     <p>سجّل دخولك لحفظ تفضيلاتك وتاريخ استخراجاتك ودعم استقرار الخوادم — مجاناً دائماً.</p>
     <div class="g-wrap">
       <div class="g_id_signin" data-type="standard" data-shape="rectangular"
@@ -270,6 +290,7 @@ footer a:hover { color:var(--accent); }
     </div>
   </div>
 
+  <!-- How It Works -->
   <div class="how">
     <div class="how-title">كيف يعمل؟</div>
     <div class="how-sub">ثلاث خطوات للحصول على النص كاملاً</div>
@@ -295,27 +316,35 @@ footer a:hover { color:var(--accent); }
 </div>
 
 <footer>
-  Nassas — مجاني ومفتوح المصدر &nbsp;·&nbsp;
+  نصّص — مجاني ومفتوح المصدر &nbsp;·&nbsp;
   لا يُجمع أي بيانات &nbsp;·&nbsp;
-  <a href="https://translate.googleapis.com" target="_blank">Google Translate</a>
+  <a href="https://mymemory.translated.net" target="_blank">MyMemory API</a>
 </footer>
 
 <div class="toast" id="toast"></div>
 
 <script>
+/* ══════════════════════════════════════
+   نصّص — index.html النسخة النهائية
+   بدون AI — التركيز الكامل على الاستخراج
+══════════════════════════════════════ */
+
 const BACKEND = 'https://backend-production-fe55.up.railway.app';
 
-let targetLang      = localStorage.getItem('nassas_lang') || 'none';
-let globalText      = '';
-let videoTitle      = 'transcript';
-let userToken       = localStorage.getItem('nassas_token') || '';
-let userDisplayName = localStorage.getItem('nassas_name')  || '';
-let paragraphMode   = false;
+// ─── State ───
+let targetLang        = localStorage.getItem('nassas_lang') || 'none';
+let globalText        = '';
+let videoTitle        = 'transcript';
+let userToken         = localStorage.getItem('nassas_token') || '';
+let userDisplayName   = localStorage.getItem('nassas_name')  || '';
 
+// ─── Init ───
 document.addEventListener('DOMContentLoaded', () => {
+  // استرجاع اللغة المحفوظة
   const saved = document.querySelector(`#langGroup [data-lang="${targetLang}"]`);
   if (saved) { clearPills('langGroup'); saved.classList.add('active'); }
 
+  // تفعيل pills اللغة
   document.querySelectorAll('#langGroup .pill').forEach(btn => {
     btn.addEventListener('click', () => {
       clearPills('langGroup');
@@ -325,10 +354,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Enter key
   document.getElementById('urlInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') startProcess();
   });
 
+  // عرض معلومات المستخدم إن كان مسجّلاً
   if (userToken && userDisplayName) updateAuthUI(true);
 });
 
@@ -336,15 +367,16 @@ function clearPills(groupId) {
   document.querySelectorAll(`#${groupId} .pill`).forEach(b => b.classList.remove('active'));
 }
 
+// ─── Google Sign-In ───
 function handleGoogleSignIn(response) {
-  const payload   = JSON.parse(atob(response.credential.split('.')[1]));
-  userToken       = response.credential;
-  userDisplayName = payload.name || payload.email || 'مستخدم';
+  const payload     = JSON.parse(atob(response.credential.split('.')[1]));
+  userToken         = response.credential;
+  userDisplayName   = payload.name || payload.email || 'مستخدم';
   localStorage.setItem('nassas_token', userToken);
   localStorage.setItem('nassas_name',  userDisplayName);
   updateAuthUI(true);
   document.getElementById('authCardBottom').style.display = 'none';
-  toast('✓ أهلاً ' + userDisplayName + '!');
+  toast('✓ أهلاً ' + userDisplayName + '! تم ربط حسابك بنجاح.');
 }
 
 function signOut() {
@@ -357,46 +389,54 @@ function signOut() {
 }
 
 function updateAuthUI(loggedIn) {
-  const gWrap = document.getElementById('gSignInWrap');
-  const badge = document.getElementById('userBadge');
-  const info  = document.getElementById('authInfo');
+  const gWrap  = document.getElementById('gSignInWrap');
+  const badge  = document.getElementById('userBadge');
+  const info   = document.getElementById('authInfo');
   if (loggedIn) {
     gWrap.style.display = 'none';
     badge.style.display = 'flex';
     document.getElementById('userName').textContent = userDisplayName;
-    info.textContent = 'مرحباً — تفضيلاتك محفوظة';
-    info.style.color = 'var(--accent)';
+    info.textContent  = 'مرحباً — تفضيلاتك محفوظة';
+    info.style.color  = 'var(--accent)';
   } else {
     gWrap.style.display = 'block';
     badge.style.display = 'none';
-    info.textContent = 'سجّل دخولك لحفظ تفضيلاتك ودعم استقرار الخادم';
-    info.style.color = '';
+    info.textContent  = 'سجّل دخولك لحفظ تفضيلاتك ودعم استقرار الخادم';
+    info.style.color  = '';
   }
 }
 
+// ─── Helpers ───
 function toast(msg, dur = 2800) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), dur);
 }
 
+// حماية XSS — دائماً قبل innerHTML
 function esc(str) {
   return String(str)
     .replace(/&/g,'&amp;').replace(/</g,'&lt;')
     .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+// ─── Video ID ───
 function getVideoId(url) {
+  // دعم كامل لصيغ روابط يوتيوب بما فيها ?si= و /live/ والـ ID المباشر
+  try { url = decodeURIComponent(url.trim()); } catch {}
   const ps = [
-    /[?&]v=([^&#]{11})/,
-    /youtu\.be\/([^?&#]{11})/,
-    /embed\/([^?&#]{11})/,
-    /shorts\/([^?&#]{11})/
+    /[?&]v=([A-Za-z0-9_-]{11})/,       // watch?v=ID
+    /youtu\.be\/([A-Za-z0-9_-]{11})/, // youtu.be/ID?si=...
+    /shorts\/([A-Za-z0-9_-]{11})/,     // /shorts/ID
+    /embed\/([A-Za-z0-9_-]{11})/,      // /embed/ID
+    /live\/([A-Za-z0-9_-]{11})/,       // /live/ID (بثوث مسجّلة)
   ];
   for (const p of ps) { const m = url.match(p); if (m) return m[1]; }
+  if (/^[A-Za-z0-9_-]{11}$/.test(url)) return url; // ID مباشر
   return null;
 }
 
+// ─── Steps Renderer ───
 let _prog = 5;
 function setProgress(pct) {
   _prog = pct;
@@ -411,14 +451,18 @@ function renderSteps(steps, showBar = true) {
     ${steps.map(s => `
       <div class="step s-${s.state}">
         <div class="step-ic">
-          ${s.state==='done' ? '✓' : s.state==='active' ? '<span class="spin">↻</span>' : '○'}
+          ${s.state === 'done'   ? '✓'
+          : s.state === 'active' ? '<span class="spin">↻</span>'
+          : '○'}
         </div>
         <span class="step-lbl">${esc(s.label)}</span>
+        ${s.note ? `<span class="step-note">${esc(s.note)}</span>` : ''}
       </div>`).join('')}
     ${showBar ? `<div class="prog-bar"><div class="prog-fill" id="pFill" style="width:${_prog}%"></div></div>` : ''}
   </div>`;
 }
 
+// ─── Error Display ───
 function showErr(title, msg, showManual = false) {
   const ea = document.getElementById('errArea');
   ea.style.display = 'block';
@@ -430,12 +474,15 @@ function showErr(title, msg, showManual = false) {
   if (showManual) document.getElementById('manualBox').style.display = 'block';
 }
 
-// ─── ترجمة باستخدام Google Translate غير الرسمي ───
-// يدعم auto-detect تلقائياً عبر sl=auto
+// ─── Translation (Fixed) ───
+// إصلاح ١: تقطيع بالجمل لا بالحروف
+// إصلاح ٢: طلبات متسلسلة مع تأخير لتفادي Rate Limit
+// إصلاح ٣: langpair صحيح باستخدام اللغة من الـ backend
 async function translateAll(text, srcLang) {
-  const sentences = text.match(/[^.!?؟\n]+[.!?؟\n]*/g) || [text];
-  const chunks = [];
-  let cur = '';
+  // بناء الـ chunks بالجمل بدل قطع الكلمات
+  const sentences  = text.match(/[^.!?؟\n]{1,}[.!?؟\n]*/g) || [text];
+  const chunks     = [];
+  let   cur        = '';
 
   for (const s of sentences) {
     if ((cur + s).length > 450) {
@@ -447,65 +494,72 @@ async function translateAll(text, srcLang) {
   }
   if (cur.trim()) chunks.push(cur.trim());
 
-  // auto يتيح لـ Google اكتشاف اللغة تلقائياً — يحل مشكلة الفيديوهات العربية والإنجليزية
-  const sl = (srcLang && srcLang !== 'und' && srcLang !== 'none') ? srcLang : 'auto';
+  // srcLang: 'und' → 'autodetect' ، أي قيمة فارغة → 'autodetect'
+  const src  = (!srcLang || srcLang === 'und') ? 'autodetect' : srcLang;
+  const pair = `${src}|${targetLang}`;
 
   let out = '';
   for (let i = 0; i < chunks.length; i++) {
     setProgress(30 + (i / chunks.length) * 65);
+
     try {
-      const url = 'https://translate.googleapis.com/translate_a/single?client=gtx'
-        + '&sl=' + sl
-        + '&tl=' + targetLang
-        + '&dt=t&q=' + encodeURIComponent(chunks[i]);
-      const r = await fetch(url);
+      const r = await fetch(
+        `https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunks[i])}&langpair=${encodeURIComponent(pair)}`
+      );
       const d = await r.json();
-      const translated = d?.[0]?.map(x => x?.[0] || '').join('') || chunks[i];
-      out += translated + ' ';
+      out += (d.responseStatus === 200 && d.responseData?.translatedText
+        ? d.responseData.translatedText
+        : chunks[i]) + ' ';
     } catch {
-      out += chunks[i] + ' ';
+      out += chunks[i] + ' '; // fallback: النص الأصلي
     }
-    if (i < chunks.length - 1) await delay(120);
+
+    // تأخير 150ms بين كل طلب لتفادي حظر MyMemory
+    if (i < chunks.length - 1) await delay(150);
   }
+
   return out.trim();
 }
 
 function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+// ─── Main Process ───
 async function startProcess() {
-  const urlInp  = document.getElementById('urlInput');
-  const mainBtn = document.getElementById('mainBtn');
-  const errArea = document.getElementById('errArea');
-  const resArea = document.getElementById('resultArea');
-  const manualB = document.getElementById('manualBox');
-  const statusA = document.getElementById('statusArea');
+  const urlInp   = document.getElementById('urlInput');
+  const mainBtn  = document.getElementById('mainBtn');
+  const errArea  = document.getElementById('errArea');
+  const resArea  = document.getElementById('resultArea');
+  const manualB  = document.getElementById('manualBox');
+  const statusA  = document.getElementById('statusArea');
 
+  // Reset
   errArea.style.display = 'none';
   manualB.style.display = 'none';
   resArea.innerHTML     = '';
   globalText            = '';
   _prog                 = 5;
-  paragraphMode         = false;
 
   const url = urlInp.value.trim();
   if (!url) { toast('الصق رابط الفيديو أولاً'); return; }
 
   const vId = getVideoId(url);
   if (!vId) {
-    showErr('رابط غير صحيح', 'تأكد من نسخ رابط يوتيوب كاملاً.');
+    showErr('رابط غير صحيح', 'تأكد من نسخ رابط يوتيوب كاملاً (فيديو، شورتس، أو بث مسجّل).');
     return;
   }
 
   mainBtn.disabled = true;
 
+  // بناء الخطوات حسب الإعدادات
   const steps = [{ key:'fetch', label:'استخراج النص من يوتيوب', state:'active' }];
   if (targetLang !== 'none')
-    steps.push({ key:'trans', label:'ترجمة النص إلى ' + langName(targetLang), state:'pend' });
+    steps.push({ key:'trans', label:`ترجمة النص إلى ${langName(targetLang)}`, state:'pend' });
 
   renderSteps(steps, true);
   setProgress(5);
 
   try {
+    // ── الخطوة ١: جلب النص ──
     const ctrl  = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), 30000);
 
@@ -515,6 +569,7 @@ async function startProcess() {
     });
     clearTimeout(timer);
 
+    // تحليل الخطأ بدقة
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
       const msg  = body.error || '';
@@ -522,7 +577,7 @@ async function startProcess() {
         throw Object.assign(new Error(msg || 'لا ترجمة'), { type: 'NO_CAPTION' });
       if (res.status === 403 || msg.includes('مقيّد'))
         throw Object.assign(new Error(msg), { type: 'RESTRICTED' });
-      throw Object.assign(new Error(msg || 'خطأ ' + res.status), { type: 'SERVER' });
+      throw Object.assign(new Error(msg || `خطأ ${res.status}`), { type: 'SERVER' });
     }
 
     const data = await res.json();
@@ -531,11 +586,13 @@ async function startProcess() {
 
     videoTitle = data.title || 'transcript';
     let text   = data.raw;
-    let lang   = data.lang || 'auto';
+    let lang   = data.lang || 'und';
 
+    // تحديث الخطوة ١
     steps[0].state = 'done';
     setProgress(25);
 
+    // ── الخطوة ٢: الترجمة (إن طُلبت) ──
     const tIdx = steps.findIndex(s => s.key === 'trans');
     if (tIdx !== -1) {
       steps[tIdx].state = 'active';
@@ -545,46 +602,67 @@ async function startProcess() {
     }
 
     setProgress(100);
-    await delay(400);
+    await delay(500);
     statusA.style.display = 'none';
 
     globalText = text;
     showResult(data);
 
   } catch (err) {
+    console.error('[nassas]', err);
+
     if (err.name === 'AbortError') {
-      showErr('انتهت مهلة الاتصال', 'السيرفر لم يستجب في 30 ثانية.\nتأكد من أن Railway شغّال وحاول مجدداً.', true);
+      showErr(
+        'انتهت مهلة الاتصال (30 ثانية)',
+        'السيرفر لم يستجب في الوقت المحدد. تأكد من أن Railway شغّال وحاول مجدداً.',
+        true
+      );
     } else if (err.type === 'NO_CAPTION') {
-      showErr('لا توجد ترجمة لهذا الفيديو', 'يوتيوب لا يوفر ترجمة لهذا الفيديو.\nاستخدم الخطة البديلة إذا لديك النص.', true);
+      showErr(
+        'لا توجد ترجمة لهذا الفيديو',
+        'يوتيوب لا يوفر ترجمة لهذا الفيديو — إما أنها معطّلة أو الفيديو موسيقى فقط.\nاستخدم الخطة البديلة إذا لديك النص.',
+        true
+      );
     } else if (err.type === 'RESTRICTED') {
-      showErr('الفيديو مقيّد', 'هذا الفيديو مقيّد جغرافياً أو يتطلب تسجيل دخول.\nافتح الفيديو في يوتيوب وانسخ الترجمة يدوياً.', true);
+      showErr(
+        'الفيديو مقيّد بواسطة يوتيوب',
+        'هذا الفيديو مقيّد جغرافياً أو يتطلب تسجيل دخول مباشر على يوتيوب.\nافتح الفيديو في يوتيوب، انسخ الترجمة يدوياً، واستخدم الخطة البديلة أدناه.',
+        true
+      );
     } else {
-      showErr('خطأ في الاتصال بالسيرفر', (err.message || 'تعذّر الوصول للخادم.') + '\nتحقق من اتصالك وحاول مجدداً.', true);
+      showErr(
+        'خطأ في الاتصال بالسيرفر',
+        (err.message || 'تعذّر الوصول للخادم.') + '\nتحقق من اتصالك وحاول مجدداً.',
+        true
+      );
     }
   } finally {
     mainBtn.disabled = false;
   }
 }
 
+// ─── Manual Fallback ───
 async function processManual() {
-  const raw     = document.getElementById('manualText').value.trim();
-  const statusA = document.getElementById('statusArea');
-  const errArea = document.getElementById('errArea');
+  const raw       = document.getElementById('manualText').value.trim();
+  const statusA   = document.getElementById('statusArea');
+  const errArea   = document.getElementById('errArea');
   if (!raw) { toast('الصق النص أولاً'); return; }
 
   errArea.style.display = 'none';
-  paragraphMode = false;
 
   if (targetLang === 'none') {
     globalText = raw;
     document.getElementById('manualBox').style.display = 'none';
-    showResult({ title: 'نص يدوي', lang: 'auto' });
+    showResult({ title: 'نص يدوي', lang: 'und' });
     return;
   }
 
   _prog = 5;
-  renderSteps([{ key:'trans', label:'ترجمة النص إلى ' + langName(targetLang), state:'active' }], true);
-  const text = await translateAll(raw, 'auto');
+  const steps = [{ key:'trans', label:`ترجمة النص إلى ${langName(targetLang)}`, state:'active' }];
+  renderSteps(steps, true);
+
+  const text        = await translateAll(raw, 'und');
+  steps[0].state    = 'done';
   setProgress(100);
   await delay(400);
   statusA.style.display = 'none';
@@ -594,52 +672,11 @@ async function processManual() {
   showResult({ title: 'نص يدوي', lang: targetLang });
 }
 
-// ─── تحويل النص إلى فقرات ───
-function textToParagraphs(text) {
-  // تقسيم عند كل 4-6 جمل أو كل 300 حرف تقريباً
-  const sentences = text.match(/[^.!?؟\n]+[.!?؟\n]*/g) || [text];
-  const paras = [];
-  let cur = '';
-  let count = 0;
-
-  for (const s of sentences) {
-    cur += s.trim() + ' ';
-    count++;
-    if (count >= 5 || cur.length > 300) {
-      paras.push(cur.trim());
-      cur = '';
-      count = 0;
-    }
-  }
-  if (cur.trim()) paras.push(cur.trim());
-  return paras;
-}
-
-function renderTextArea() {
-  const body = document.getElementById('txBody');
-  if (!body) return;
-
-  if (paragraphMode) {
-    const paras = textToParagraphs(globalText);
-    body.innerHTML = '<div class="tx-paragraph">'
-      + paras.map(p => '<p>' + esc(p) + '</p>').join('')
-      + '</div>';
-  } else {
-    body.innerHTML = '<div class="tx-text">' + esc(globalText) + '</div>';
-  }
-}
-
-function toggleParagraph() {
-  paragraphMode = !paragraphMode;
-  const btn = document.getElementById('paraBtn');
-  if (btn) btn.classList.toggle('active', paragraphMode);
-  renderTextArea();
-}
-
+// ─── Result Renderer ───
 function showResult(data) {
-  const words   = globalText.split(/\s+/).filter(w => w.length > 0);
-  const readMin = Math.max(1, Math.ceil(words.length / 180));
-  const langLbl = targetLang !== 'none' ? langName(targetLang) : (langName(data.lang) || 'أصلية');
+  const words    = globalText.split(/\s+/).filter(w => w.length > 0);
+  const readMin  = Math.max(1, Math.ceil(words.length / 180));
+  const langLbl  = targetLang !== 'none' ? langName(targetLang) : (langName(data.lang) || 'أصلية');
 
   document.getElementById('resultArea').innerHTML = `
     <div class="result-wrap">
@@ -661,18 +698,18 @@ function showResult(data) {
         <div class="result-card-hd">
           <span class="result-card-title">${esc(data.title || 'النص المستخرج')}</span>
           <div class="result-actions">
-            <button class="btn-action" id="paraBtn" onclick="toggleParagraph()">☰ فقرات</button>
             <button class="btn-action" onclick="copyText()">نسخ</button>
             <button class="btn-action" onclick="downloadTxt()">تنزيل .txt</button>
           </div>
         </div>
-        <div class="result-body" id="txBody"></div>
+        <div class="result-body">
+          <div class="tx-text">${esc(globalText)}</div>
+        </div>
       </div>
     </div>`;
-
-  renderTextArea();
 }
 
+// ─── Copy / Download ───
 function copyText() {
   navigator.clipboard.writeText(globalText)
     .then(()  => toast('✓ تم نسخ النص الكامل'))
@@ -692,8 +729,9 @@ function downloadTxt() {
   toast('✓ بدأ تحميل الملف');
 }
 
+// ─── Lang Labels ───
 function langName(code) {
-  const map = { ar:'العربية', en:'English', fr:'Français', de:'Deutsch', tr:'Türkçe', und:'أصلية', none:'أصلية', auto:'أصلية' };
+  const map = { ar:'العربية', en:'English', fr:'Français', de:'Deutsch', tr:'Türkçe', und:'أصلية', none:'أصلية' };
   return map[code] || (code ? code.toUpperCase() : 'أصلية');
 }
 </script>
