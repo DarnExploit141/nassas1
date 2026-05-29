@@ -465,16 +465,16 @@ async function translateAll(text, srcLang) {
   if (cur.trim()) chunks.push(cur.trim());
 
   // srcLang: 'und' → 'autodetect' ، أي قيمة فارغة → 'autodetect'
-const src = (srcLang && srcLang !== 'und' && srcLang !== 'none') ? srcLang : 'en';
+  const src = (srcLang && srcLang !== 'und' && srcLang !== 'none') ? srcLang : 'en';
   let out = '';
   for (let i = 0; i < chunks.length; i++) {
     setProgress(30 + (i / chunks.length) * 65);
 
     try {
       const r = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=' + src + '&tl=' + targetLang + '&dt=t&q=' + encodeURIComponent(chunks[i]));
-     const d = await r.json();
+      const d = await r.json();
       const translated = d?.[0]?.map(s => s?.[0] || '').join('') || chunks[i];
-out += translated + ' ';
+      out += translated + ' ';
     } catch {
       out += chunks[i] + ' '; // fallback: النص الأصلي
     }
