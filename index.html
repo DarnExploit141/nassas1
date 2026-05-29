@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nassas</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23111827'/%3E%3Crect x='8' y='8' width='84' height='84' rx='18' fill='rgba(0,229,180,0.15)' stroke='rgba(0,229,180,0.4)' stroke-width='2'/%3E%3Ctext x='50' y='68' text-anchor='middle' font-size='52' fill='%2300E5B4'%3E✦%3C/text%3E%3C/svg%3E"><meta name="description" content="استخرج النص الكامل من أي فيديو يوتيوب وترجمه بنقرة واحدة — مجاناً">
+<title>نصّص — استخراج وترجمة نصوص يوتيوب</title>
+<meta name="description" content="استخرج النص الكامل من أي فيديو يوتيوب وترجمه بنقرة واحدة — مجاناً">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
@@ -42,7 +42,6 @@ nav { backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bot
 .logo-icon { width:36px; height:36px; background:var(--accent-dim); border:1px solid rgba(0,229,180,0.3); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; }
 .logo-text { font-size:20px; font-weight:900; color:var(--text); }
 .logo-text span { color:var(--accent); }
-.logo-text { letter-spacing: -0.5px; }
 .nav-tag { font-size:12px; padding:3px 10px; border-radius:99px; background:var(--accent-dim); color:var(--accent); border:1px solid rgba(0,229,180,0.2); }
 
 /* ── Hero ── */
@@ -133,6 +132,32 @@ nav { backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bot
 .result-body::-webkit-scrollbar-thumb { background:var(--bg4); border-radius:99px; }
 .tx-text { font-size:16px; line-height:2; color:var(--text); white-space:pre-wrap; direction:auto; font-weight:300; }
 
+/* ── Paragraph Mode ── */
+.tx-para { font-size:16px; line-height:2; color:var(--text); direction:auto; font-weight:300; }
+.tx-para p { margin-bottom:1.4em; }
+.tx-para p:last-child { margin-bottom:0; }
+
+/* Toggle switch */
+.para-toggle { display:flex; align-items:center; gap:8px; cursor:pointer; user-select:none; }
+.para-toggle-label { font-size:13px; color:var(--text2); white-space:nowrap; }
+.para-toggle-label.active { color:var(--accent); font-weight:500; }
+.toggle-sw { position:relative; width:36px; height:20px; flex-shrink:0; }
+.toggle-sw input { opacity:0; width:0; height:0; position:absolute; }
+.toggle-slider {
+  position:absolute; inset:0; border-radius:99px;
+  background:var(--bg4); border:1px solid var(--border2);
+  transition:background .2s;
+}
+.toggle-slider::before {
+  content:''; position:absolute;
+  width:14px; height:14px; border-radius:50%;
+  left:2px; top:2px;
+  background:var(--text3);
+  transition:transform .2s, background .2s;
+}
+.toggle-sw input:checked + .toggle-slider { background:var(--accent-dim); border-color:rgba(0,229,180,0.4); }
+.toggle-sw input:checked + .toggle-slider::before { transform:translateX(16px); background:var(--accent); }
+
 /* ── Auth Card ── */
 .auth-card { background:linear-gradient(135deg,#131833 0%,#1B2246 100%); border:1px solid rgba(0,229,180,0.15); border-radius:var(--r); padding:28px; text-align:center; margin-bottom:24px; }
 .auth-card h3 { font-size:17px; font-weight:800; color:#FFF; margin-bottom:8px; }
@@ -173,7 +198,7 @@ footer a:hover { color:var(--accent); }
   <div class="nav-inner">
     <a href="#" class="logo">
       <div class="logo-icon">✦</div>
-      <span class="logo-text">Nassas</span>
+      <span class="logo-text">نصّ<span>ص</span></span>
     </a>
     <span class="nav-tag">مجاني بالكامل</span>
   </div>
@@ -466,16 +491,21 @@ async function translateAll(text, srcLang) {
   if (cur.trim()) chunks.push(cur.trim());
 
   // srcLang: 'und' → 'autodetect' ، أي قيمة فارغة → 'autodetect'
-  const src = (srcLang && srcLang !== 'und' && srcLang !== 'none') ? srcLang : 'en';
+  const src  = (!srcLang || srcLang === 'und') ? 'autodetect' : srcLang;
+  const pair = `${src}|${targetLang}`;
+
   let out = '';
   for (let i = 0; i < chunks.length; i++) {
     setProgress(30 + (i / chunks.length) * 65);
 
     try {
-      const r = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=' + src + '&tl=' + targetLang + '&dt=t&q=' + encodeURIComponent(chunks[i]));
+      const r = await fetch(
+        `https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunks[i])}&langpair=${encodeURIComponent(pair)}`
+      );
       const d = await r.json();
-      const translated = d?.[0]?.map(s => s?.[0] || '').join('') || chunks[i];
-      out += translated + ' ';
+      out += (d.responseStatus === 200 && d.responseData?.translatedText
+        ? d.responseData.translatedText
+        : chunks[i]) + ' ';
     } catch {
       out += chunks[i] + ' '; // fallback: النص الأصلي
     }
