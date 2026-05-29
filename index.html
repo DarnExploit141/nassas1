@@ -163,9 +163,7 @@ footer a:hover { color:var(--accent); }
   .btn-go{text-align:center}
   .stats-row{grid-template-columns:repeat(2,1fr)}
   .how-grid{grid-template-columns:1fr}
-  .result-card-hd { flex-direction: column; align-items: stretch; gap: 12px; }
-  .result-card-title { text-align: center; max-width: 100% !important; }
-  .result-actions { justify-content: center; width: 100%; }
+  .result-card-hd{flex-direction:column;align-items:flex-start;gap:8px}
 }
 </style>
 </head>
@@ -183,6 +181,7 @@ footer a:hover { color:var(--accent); }
 
 <div class="container">
 
+  <!-- Hero -->
   <div class="hero">
     <div class="eyebrow">✦ يعمل مع يوتيوب مباشرةً</div>
     <h1>استخرج <span class="hl">نص أي فيديو</span><br>وترجمه بنقرة واحدة</h1>
@@ -191,6 +190,7 @@ footer a:hover { color:var(--accent); }
 
   <div class="ad-space">مساحة إعلانية</div>
 
+  <!-- Main Card -->
   <div class="card">
     <div class="card-hd">
       <div class="card-title">
@@ -200,6 +200,7 @@ footer a:hover { color:var(--accent); }
     </div>
     <div class="card-body">
 
+      <!-- Auth Strip -->
       <div class="auth-strip" id="authStrip">
         <div class="info" id="authInfo">سجّل دخولك لحفظ تفضيلاتك ودعم استقرار الخادم</div>
         <div id="gSignInWrap">
@@ -217,6 +218,7 @@ footer a:hover { color:var(--accent); }
         </div>
       </div>
 
+      <!-- URL Input -->
       <div class="url-wrap">
         <input class="url-input" id="urlInput"
                placeholder="https://www.youtube.com/watch?v=..."
@@ -224,6 +226,7 @@ footer a:hover { color:var(--accent); }
         <button class="btn-go" id="mainBtn" onclick="startProcess()">استخراج</button>
       </div>
 
+      <!-- Lang Pills -->
       <div class="opt-label">ترجمة النص إلى</div>
       <div class="pill-group" id="langGroup">
         <button class="pill active" data-lang="none">بدون ترجمة</button>
@@ -234,9 +237,11 @@ footer a:hover { color:var(--accent); }
         <button class="pill" data-lang="tr">🇹🇷 Türkçe</button>
       </div>
 
+      <!-- Status / Error / Result areas -->
       <div id="statusArea" style="display:none"></div>
       <div id="errArea"    style="display:none"></div>
 
+      <!-- Manual Fallback -->
       <div id="manualBox" class="manual-box" style="display:none">
         <div class="label">💡 الخطة البديلة — الصق النص يدوياً</div>
         <div class="sub">افتح الفيديو في يوتيوب ← فعّل الترجمة ← انسخ النص ← الصقه هنا</div>
@@ -250,6 +255,7 @@ footer a:hover { color:var(--accent); }
 
   <div class="ad-space">مساحة إعلانية</div>
 
+  <!-- Auth Card (لمن لم يسجّل بعد) -->
   <div class="auth-card" id="authCardBottom">
     <h3>انضم إلى مجتمع نصّص</h3>
     <p>سجّل دخولك لحفظ تفضيلاتك وتاريخ استخراجاتك ودعم استقرار الخوادم — مجاناً دائماً.</p>
@@ -259,6 +265,7 @@ footer a:hover { color:var(--accent); }
     </div>
   </div>
 
+  <!-- How It Works -->
   <div class="how">
     <div class="how-title">كيف يعمل؟</div>
     <div class="how-sub">ثلاث خطوات للحصول على النص كاملاً</div>
@@ -308,9 +315,11 @@ let userDisplayName   = localStorage.getItem('nassas_name')  || '';
 
 // ─── Init ───
 document.addEventListener('DOMContentLoaded', () => {
+  // استرجاع اللغة المحفوظة
   const saved = document.querySelector(`#langGroup [data-lang="${targetLang}"]`);
   if (saved) { clearPills('langGroup'); saved.classList.add('active'); }
 
+  // تفعيل pills اللغة
   document.querySelectorAll('#langGroup .pill').forEach(btn => {
     btn.addEventListener('click', () => {
       clearPills('langGroup');
@@ -320,10 +329,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Enter key
   document.getElementById('urlInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') startProcess();
   });
 
+  // عرض معلومات المستخدم إن كان مسجّلاً
   if (userToken && userDisplayName) updateAuthUI(true);
 });
 
@@ -377,12 +388,14 @@ function toast(msg, dur = 2800) {
   setTimeout(() => t.classList.remove('show'), dur);
 }
 
+// حماية XSS — دائماً قبل innerHTML
 function esc(str) {
   return String(str)
     .replace(/&/g,'&amp;').replace(/</g,'&lt;')
     .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+// ─── Video ID ───
 function getVideoId(url) {
   const ps = [
     /[?&]v=([^&#]{11})/,
@@ -420,6 +433,7 @@ function renderSteps(steps, showBar = true) {
   </div>`;
 }
 
+// ─── Error Display ───
 function showErr(title, msg, showManual = false) {
   const ea = document.getElementById('errArea');
   ea.style.display = 'block';
@@ -431,10 +445,14 @@ function showErr(title, msg, showManual = false) {
   if (showManual) document.getElementById('manualBox').style.display = 'block';
 }
 
-// ─── Translation ───
+// ─── Translation (Fixed) ───
+// إصلاح ١: تقطيع بالجمل لا بالحروف
+// إصلاح ٢: طلبات متسلسلة مع تأخير لتفادي Rate Limit
+// إصلاح ٣: langpair صحيح باستخدام اللغة من الـ backend
 async function translateAll(text, srcLang) {
+  // بناء الـ chunks بالجمل بدل قطع الكلمات
   const sentences  = text.match(/[^.!?؟\n]{1,}[.!?؟\n]*/g) || [text];
-  const chunks      = [];
+  const chunks     = [];
   let   cur        = '';
 
   for (const s of sentences) {
@@ -447,6 +465,7 @@ async function translateAll(text, srcLang) {
   }
   if (cur.trim()) chunks.push(cur.trim());
 
+  // srcLang: 'und' → 'autodetect' ، أي قيمة فارغة → 'autodetect'
   const src = (srcLang && srcLang !== 'und' && srcLang !== 'none') ? srcLang : 'en';
   let out = '';
   for (let i = 0; i < chunks.length; i++) {
@@ -458,9 +477,10 @@ async function translateAll(text, srcLang) {
       const translated = d?.[0]?.map(s => s?.[0] || '').join('') || chunks[i];
       out += translated + ' ';
     } catch {
-      out += chunks[i] + ' ';
+      out += chunks[i] + ' '; // fallback: النص الأصلي
     }
 
+    // تأخير 150ms بين كل طلب لتفادي حظر MyMemory
     if (i < chunks.length - 1) await delay(150);
   }
 
@@ -478,9 +498,10 @@ async function startProcess() {
   const manualB  = document.getElementById('manualBox');
   const statusA  = document.getElementById('statusArea');
 
+  // Reset
   errArea.style.display = 'none';
   manualB.style.display = 'none';
-  resArea.innerHTML      = '';
+  resArea.innerHTML     = '';
   globalText            = '';
   _prog                 = 5;
 
@@ -495,6 +516,7 @@ async function startProcess() {
 
   mainBtn.disabled = true;
 
+  // بناء الخطوات حسب الإعدادات
   const steps = [{ key:'fetch', label:'استخراج النص من يوتيوب', state:'active' }];
   if (targetLang !== 'none')
     steps.push({ key:'trans', label:`ترجمة النص إلى ${langName(targetLang)}`, state:'pend' });
@@ -503,6 +525,7 @@ async function startProcess() {
   setProgress(5);
 
   try {
+    // ── الخطوة ١: جلب النص ──
     const ctrl  = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), 30000);
 
@@ -512,6 +535,7 @@ async function startProcess() {
     });
     clearTimeout(timer);
 
+    // تحليل الخطأ بدقة
     if (!res.ok) {
       const body = await res.json().catch(() => ({}));
       const msg  = body.error || '';
@@ -530,9 +554,11 @@ async function startProcess() {
     let text   = data.raw;
     let lang   = data.lang || 'und';
 
+    // تحديث الخطوة ١
     steps[0].state = 'done';
     setProgress(25);
 
+    // ── الخطوة ٢: الترجمة (إن طُلبت) ──
     const tIdx = steps.findIndex(s => s.key === 'trans');
     if (tIdx !== -1) {
       steps[tIdx].state = 'active';
@@ -550,17 +576,33 @@ async function startProcess() {
 
   } catch (err) {
     console.error('[nassas]', err);
+
     if (err.name === 'AbortError') {
-      showErr('انتهت مهلة الاتصال (30 ثانية)', 'السيرفر لم يستجب في الوقت المحدد.', true);
+      showErr(
+        'انتهت مهلة الاتصال (30 ثانية)',
+        'السيرفر لم يستجب في الوقت المحدد. تأكد من أن Railway شغّال وحاول مجدداً.',
+        true
+      );
     } else if (err.type === 'NO_CAPTION') {
-      showErr('لا توجد ترجمة لهذا الفيديو', 'يوتيوب لا يوفر ترجمة لهذا الفيديو.', true);
+      showErr(
+        'لا توجد ترجمة لهذا الفيديو',
+        'يوتيوب لا يوفر ترجمة لهذا الفيديو — إما أنها معطّلة أو الفيديو موسيقى فقط.\nاستخدم الخطة البديلة إذا لديك النص.',
+        true
+      );
     } else if (err.type === 'RESTRICTED') {
-      showErr('الفيديو مقيّد بواسطة يوتيوب', 'هذا الفيديو مقيّد جغرافياً أو يتطلب تسجيل دخول.', true);
+      showErr(
+        'الفيديو مقيّد بواسطة يوتيوب',
+        'هذا الفيديو مقيّد جغرافياً أو يتطلب تسجيل دخول مباشر على يوتيوب.\nافتح الفيديو في يوتيوب، انسخ الترجمة يدوياً، واستخدم الخطة البديلة أدناه.',
+        true
+      );
     } else {
-      showErr('خطأ في الاتصال بالسيرفر', (err.message || 'تعذّر الوصول للخادم.'), true);
+      showErr(
+        'خطأ في الاتصال بالسيرفر',
+        (err.message || 'تعذّر الوصول للخادم.') + '\nتحقق من اتصالك وحاول مجدداً.',
+        true
+      );
     }
-  } file_name = "" 
-  finally {
+  } finally {
     mainBtn.disabled = false;
   }
 }
@@ -619,18 +661,9 @@ function showResult(data) {
         </div>
       </div>
       <div class="result-card">
-        <div class="result-card-hd" style="display:flex; align-items:center; justify-content:space-between; width:100%; gap:12px;">
-          <span class="result-card-title" style="max-width:35%;">${esc(data.title || 'النص المستخرج')}</span>
-          
-          <div class="result-actions" style="display:flex; align-items:center; gap:10px; flex-shrink:0;">
-            <label style="display:inline-flex; align-items:center; gap:6px; cursor:pointer; font-size:12px; color:var(--text2); user-select:none; margin-left:4px;">
-              <input type="checkbox" id="paraToggle" onchange="toggleParagraphMode()" style="display:none;">
-              <span id="paraSwitch" style="width:34px; height:18px; background:var(--bg4); border:1px solid var(--border2); border-radius:99px; position:relative; display:inline-block; transition:all 0.2s ease;">
-                <span id="paraKnob" style="width:12px; height:12px; background:var(--text2); border-radius:50%; position:absolute; top:2px; right:2px; transition:all 0.2s ease;"></span>
-              </span>
-              <span>نمط الفقرات</span>
-            </label>
-
+        <div class="result-card-hd">
+          <span class="result-card-title">${esc(data.title || 'النص المستخرج')}</span>
+          <div class="result-actions">
             <button class="btn-action" onclick="copyText()">نسخ</button>
             <button class="btn-action" onclick="downloadTxt()">تنزيل .txt</button>
           </div>
@@ -640,60 +673,6 @@ function showResult(data) {
         </div>
       </div>
     </div>`;
-}
-
-// ─── دالة التبديل بين الأنماط (Paragraph Mode Logic) ───
-function toggleParagraphMode() {
-  const toggle = document.getElementById('paraToggle');
-  const swBg = document.getElementById('paraSwitch');
-  const knob = document.getElementById('paraKnob');
-  const body = document.querySelector('.tx-text');
-  
-  if (!body || !globalText) return;
-
-  if (toggle.checked) {
-    // تشغيل النمط: تحويل شكل الزر للون الأخضر والتحريك لليسار
-    swBg.style.background = 'var(--accent-dim)';
-    swBg.style.borderColor = 'rgba(0,229,180,0.4)';
-    knob.style.background = 'var(--accent)';
-    knob.style.transform = 'translateX(-16px)';
-    
-    // إدخال النص مقطعاً كفقرات منسقة
-    body.innerHTML = formatToParagraphs(globalText);
-  } else {
-    // إيقاف النمط: إرجاع السويتش لوضعه الأصلي
-    swBg.style.background = 'var(--bg4)';
-    swBg.style.borderColor = 'var(--border2)';
-    knob.style.background = 'var(--text2)';
-    knob.style.transform = 'translateX(0)';
-    
-    body.innerHTML = esc(globalText);
-  }
-}
-
-// دالة تقطيع النص إلى فقرات تلقائية
-function formatToParagraphs(text) {
-  const sentences = text.match(/[^.!?؟\n]+[.!?؟\n]*/g) || [text];
-  let htmlResult = '';
-  let currentPara = [];
-
-  sentences.forEach(sentence => {
-    let cleanSentence = sentence.trim();
-    if (!cleanSentence) return;
-    
-    currentPara.push(cleanSentence);
-    
-    if (currentPara.length === 3) {
-      htmlResult += `<p style="margin-bottom:16px; display:block; text-align:justify;">${esc(currentPara.join(' '))}</p>`;
-      currentPara = [];
-    }
-  });
-
-  if (currentPara.length > 0) {
-    htmlResult += `<p style="margin-bottom:16px; display:block; text-align:justify;">${esc(currentPara.join(' '))}</p>`;
-  }
-
-  return htmlResult || esc(text);
 }
 
 // ─── Copy / Download ───
@@ -716,6 +695,7 @@ function downloadTxt() {
   toast('✓ بدأ تحميل الملف');
 }
 
+// ─── Lang Labels ───
 function langName(code) {
   const map = { ar:'العربية', en:'English', fr:'Français', de:'Deutsch', tr:'Türkçe', und:'أصلية', none:'أصلية' };
   return map[code] || (code ? code.toUpperCase() : 'أصلية');
