@@ -1,526 +1,705 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html dir="rtl" lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نصّص — استخراج نصوص اليوتيوب والترجمة</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
-    <style>
-        /* --- التنسيقات العامة والهوية البصرية (Theme) --- */
-        :root {
-            --bg-color: #0b0f19;
-            --card-bg: #131926;
-            --border-color: #1e293b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --primary-cyan: #00f2fe;
-            --accent-green: #00b894;
-            --btn-bg: #1e293b;
-            --btn-hover: #334155;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nassas</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23111827'/%3E%3Crect x='8' y='8' width='84' height='84' rx='18' fill='rgba(0,229,180,0.15)' stroke='rgba(0,229,180,0.4)' stroke-width='2'/%3E%3Ctext x='50' y='68' text-anchor='middle' font-size='52' fill='%2300E5B4'%3E✦%3C/text%3E%3C/svg%3E"><meta name="description" content="استخرج النص الكامل من أي فيديو يوتيوب وترجمه بنقرة واحدة — مجاناً">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+:root {
+  --bg:         #0A0D1A;
+  --bg2:        #11152C;
+  --bg3:        #171D3B;
+  --bg4:        #1F264E;
+  --border:     rgba(255,255,255,0.06);
+  --border2:    rgba(255,255,255,0.12);
+  --accent:     #00E5B4;
+  --accent-dim: rgba(0,229,180,0.10);
+  --red:        #FF4D6D;
+  --amber:      #F59E0B;
+  --text:       #EEF2FF;
+  --text2:      #8892B0;
+  --text3:      #4A5568;
+  --font:       'Tajawal', sans-serif;
+  --r:          14px;
+  --r-sm:       8px;
+}
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html { scroll-behavior:smooth; }
+body { font-family:var(--font); background:var(--bg); color:var(--text); min-height:100vh; line-height:1.6; }
+body::before { content:''; position:fixed; inset:0; background:radial-gradient(circle at 50% 0%,rgba(0,229,180,0.05) 0%,transparent 50%); pointer-events:none; z-index:0; }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Cairo', sans-serif;
-        }
+.container { max-width:800px; margin:0 auto; padding:0 20px; position:relative; z-index:1; }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
+/* ── Navbar ── */
+nav { backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:1px solid var(--border); background:rgba(10,13,26,0.85); position:sticky; top:0; z-index:100; }
+.nav-inner { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; max-width:900px; margin:0 auto; }
+.logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+.logo-icon { width:36px; height:36px; background:var(--accent-dim); border:1px solid rgba(0,229,180,0.3); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; }
+.logo-text { font-size:20px; font-weight:900; color:var(--text); }
+.logo-text span { color:var(--accent); }
+.logo-text { letter-spacing: -0.5px; }
+.nav-tag { font-size:12px; padding:3px 10px; border-radius:99px; background:var(--accent-dim); color:var(--accent); border:1px solid rgba(0,229,180,0.2); }
 
-        .container {
-            width: 100%;
-            max-width: 850px;
-            margin: 0 auto;
-        }
+/* ── Hero ── */
+.hero { text-align:center; padding:52px 0 36px; }
+.eyebrow { display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--accent); border:1px solid rgba(0,229,180,0.2); border-radius:99px; padding:5px 14px; background:var(--accent-dim); margin-bottom:20px; }
+.hero h1 { font-size:clamp(28px,4.5vw,46px); font-weight:900; line-height:1.2; margin-bottom:14px; }
+.hero h1 .hl { background:linear-gradient(135deg,var(--accent),#3BFFD6); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.hero p { font-size:16px; color:var(--text2); max-width:540px; margin:0 auto 28px; }
 
-        /* --- الهيدر والترحيب --- */
-        header {
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--border-color);
-        }
+/* ── Ads ── */
+.ad-space { width:100%; min-height:80px; background:rgba(255,255,255,0.02); border:1px dashed var(--border2); border-radius:var(--r); display:flex; align-items:center; justify-content:center; color:var(--text3); font-size:13px; margin:18px 0; }
 
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+/* ── Main Card ── */
+.card { background:var(--bg2); border:1px solid var(--border2); border-radius:20px; overflow:hidden; margin-bottom:24px; box-shadow:0 0 60px rgba(0,0,0,0.4); }
+.card-hd { padding:18px 24px; border-bottom:1px solid var(--border); background:var(--bg3); display:flex; align-items:center; justify-content:space-between; }
+.card-title { font-size:15px; font-weight:700; color:var(--text); display:flex; align-items:center; gap:8px; }
+.card-body { padding:24px; }
 
-        .logo {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-main);
-        }
+/* ── Auth Strip ── */
+.auth-strip { display:flex; align-items:center; gap:12px; padding:10px 14px; margin-bottom:20px; background:var(--bg3); border:1px solid var(--border); border-radius:var(--r-sm); font-size:13px; }
+.auth-strip .info { flex:1; color:var(--text2); }
+.auth-user { font-weight:600; color:var(--accent); }
+.btn-signout { padding:4px 12px; font-size:12px; cursor:pointer; font-family:var(--font); background:transparent; border:1px solid rgba(255,77,109,0.3); border-radius:99px; color:var(--red); transition:all .15s; }
+.btn-signout:hover { background:rgba(255,77,109,0.08); }
 
-        .badge-free {
-            background-color: rgba(0, 184, 148, 0.15);
-            color: var(--accent-green);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
+/* ── URL Input ── */
+.url-wrap { display:flex; gap:10px; margin-bottom:20px; }
+.url-input { flex:1; height:50px; background:var(--bg3); border:1px solid var(--border2); border-radius:var(--r-sm); padding:0 16px; font-size:14px; color:var(--text); font-family:var(--font); outline:none; direction:ltr; transition:border-color .2s,box-shadow .2s; }
+.url-input::placeholder { color:var(--text3); }
+.url-input:focus { border-color:rgba(0,229,180,0.5); box-shadow:0 0 0 3px rgba(0,229,180,0.15); }
+.btn-go { height:50px; padding:0 26px; background:var(--accent); color:#0A0D1A; font-size:15px; font-weight:700; font-family:var(--font); border:none; border-radius:var(--r-sm); cursor:pointer; white-space:nowrap; transition:opacity .2s,transform .1s; }
+.btn-go:hover { opacity:.88; }
+.btn-go:active { transform:scale(.97); }
+.btn-go:disabled { opacity:.35; cursor:not-allowed; transform:none; }
 
-        .user-welcome {
-            font-size: 14px;
-            color: var(--accent-green);
-            background: rgba(0, 184, 148, 0.05);
-            padding: 6px 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(0, 184, 148, 0.2);
-        }
+/* ── Lang Pills ── */
+.opt-label { font-size:12px; font-weight:500; color:var(--text3); text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px; }
+.pill-group { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
+.pill { padding:7px 16px; font-size:13px; font-family:var(--font); background:var(--bg3); border:1px solid var(--border2); border-radius:99px; color:var(--text2); cursor:pointer; transition:all .15s; }
+.pill:hover { border-color:var(--border2); color:var(--text); }
+.pill.active { background:var(--accent-dim); border-color:rgba(0,229,180,0.4); color:var(--accent); font-weight:500; }
 
-        /* --- واجهة الإدخال والتحكم --- */
-        .main-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
+/* ── Steps ── */
+.steps-wrap { background:var(--bg3); border:1px solid var(--border); border-radius:var(--r); padding:16px; margin-bottom:14px; }
+.step { display:flex; align-items:center; gap:12px; padding:6px 0; font-size:14px; }
+.step-ic { width:26px; height:26px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:12px; }
+.s-done   .step-ic { background:rgba(0,212,170,.15); color:var(--accent); border:1px solid rgba(0,212,170,.3); }
+.s-active .step-ic { background:rgba(245,158,11,.1); color:var(--amber); border:1px solid rgba(245,158,11,.3); }
+.s-pend   .step-ic { background:var(--bg4); border:1px solid var(--border2); color:var(--text3); }
+.s-pend  .step-lbl { color:var(--text3); }
+.step-lbl { flex:1; }
+.step-note { font-size:12px; color:var(--text3); }
+.prog-bar { height:3px; background:var(--bg4); border-radius:99px; overflow:hidden; margin-top:10px; }
+.prog-fill { height:100%; border-radius:99px; background:linear-gradient(90deg,var(--accent),#3BFFD6); transition:width .35s ease; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.spin { display:inline-block; animation:spin .9s linear infinite; }
 
-        .intro-text {
-            color: var(--text-muted);
-            font-size: 15px;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
+/* ── Errors ── */
+.err-box { background:rgba(255,77,109,.08); border:1px solid rgba(255,77,109,.25); border-radius:var(--r); padding:16px 18px; margin-bottom:14px; }
+.err-title { font-size:14px; font-weight:600; color:var(--red); margin-bottom:6px; }
+.err-msg { font-size:13px; color:#FF8098; line-height:1.75; }
 
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
+/* ── Manual Fallback ── */
+.manual-box { background:var(--bg3); border:1px solid var(--border2); border-radius:var(--r); padding:18px; margin-bottom:14px; }
+.manual-box .label { font-size:14px; font-weight:600; color:var(--text); margin-bottom:4px; }
+.manual-box .sub { font-size:13px; color:var(--text2); margin-bottom:10px; }
+.manual-textarea { width:100%; min-height:120px; background:var(--bg); border:1px solid var(--border2); border-radius:8px; padding:12px; font-size:14px; color:var(--text); font-family:var(--font); resize:vertical; outline:none; }
+.manual-textarea:focus { border-color:rgba(0,229,180,0.4); }
+.btn-sm { height:38px; padding:0 18px; font-size:13px; font-family:var(--font); border-radius:8px; cursor:pointer; transition:all .15s; font-weight:500; margin-top:10px; }
+.btn-pri { background:var(--accent); color:#0A0D1A; border:none; }
+.btn-pri:hover { opacity:.85; }
 
-        input[type="text"] {
-            flex: 1;
-            background-color: var(--bg-color);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 12px 15px;
-            color: var(--text-main);
-            font-size: 15px;
-            outline: none;
-            transition: border 0.3s;
-        }
+/* ── Result ── */
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+.result-wrap { animation:fadeUp .35s ease; }
+.stats-row { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px; }
+.stat { background:var(--bg3); border:1px solid var(--border); border-radius:10px; padding:12px; text-align:center; }
+.stat-v { font-size:20px; font-weight:700; color:var(--text); }
+.stat-l { font-size:12px; color:var(--text3); margin-top:2px; }
+.result-card { background:var(--bg3); border:1px solid var(--border2); border-radius:var(--r); overflow:hidden; }
+.result-card-hd { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; background:var(--bg4); border-bottom:1px solid var(--border); }
+.result-card-title { font-size:14px; font-weight:500; color:var(--text); flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.result-actions { display:flex; gap:8px; flex-shrink:0; }
+.btn-action { height:32px; padding:0 14px; font-size:13px; font-family:var(--font); background:var(--bg3); border:1px solid var(--border2); color:var(--text2); border-radius:8px; cursor:pointer; transition:all .15s; }
+.btn-action:hover { background:var(--bg4); color:var(--text); }
+.result-body { padding:20px; max-height:420px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--bg4) transparent; }
+.result-body::-webkit-scrollbar { width:4px; }
+.result-body::-webkit-scrollbar-thumb { background:var(--bg4); border-radius:99px; }
+.tx-text { font-size:16px; line-height:2; color:var(--text); white-space:pre-wrap; direction:auto; font-weight:300; }
 
-        input[type="text"]:focus {
-            border-color: var(--primary-cyan);
-        }
+/* ── Auth Card ── */
+.auth-card { background:linear-gradient(135deg,#131833 0%,#1B2246 100%); border:1px solid rgba(0,229,180,0.15); border-radius:var(--r); padding:28px; text-align:center; margin-bottom:24px; }
+.auth-card h3 { font-size:17px; font-weight:800; color:#FFF; margin-bottom:8px; }
+.auth-card p { font-size:13px; color:var(--text2); margin-bottom:20px; line-height:1.6; }
+.g-wrap { display:inline-flex; justify-content:center; background:#FFF; padding:4px; border-radius:8px; }
 
-        .btn-primary {
-            background-color: var(--btn-bg);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            padding: 0 25px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
+/* ── How It Works ── */
+.how { padding:4px 0 50px; }
+.how-title { font-size:20px; font-weight:700; text-align:center; margin-bottom:6px; }
+.how-sub { font-size:14px; color:var(--text2); text-align:center; margin-bottom:28px; }
+.how-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+.how-card { background:var(--bg2); border:1px solid var(--border); border-radius:var(--r); padding:20px; text-align:center; }
+.how-num { width:42px; height:42px; border-radius:12px; background:var(--accent-dim); border:1px solid rgba(0,229,180,0.25); display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:900; color:var(--accent); margin:0 auto 12px; }
+.how-card h4 { font-size:14px; font-weight:600; color:var(--text); margin-bottom:4px; }
+.how-card p { font-size:13px; color:var(--text2); line-height:1.65; }
 
-        .btn-primary:hover {
-            background-color: var(--btn-hover);
-            border-color: var(--text-muted);
-        }
+footer { border-top:1px solid var(--border); padding:20px; text-align:center; font-size:13px; color:var(--text3); }
+footer a { color:var(--text2); text-decoration:none; }
+footer a:hover { color:var(--accent); }
 
-        .controls-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
+/* ── Toast ── */
+.toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--bg4); border:1px solid var(--border2); color:var(--text); padding:9px 22px; border-radius:99px; font-size:14px; font-family:var(--font); box-shadow:0 8px 32px rgba(0,0,0,.5); opacity:0; transition:opacity .2s,transform .2s; pointer-events:none; z-index:999; }
+.toast.show { opacity:1; transform:translateX(-50%) translateY(-4px); }
 
-        .translate-select {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            padding: 8px 15px;
-            border-radius: 8px;
-            outline: none;
-            cursor: pointer;
-        }
-
-        /* --- قسم الإحصائيات --- */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .stat-box {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-        }
-
-        .stat-val {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--primary-cyan);
-        }
-
-        .stat-lbl {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 5px;
-        }
-
-        /* --- لوحة وعارض النتائج (المشكلة السابقة) --- */
-        .result-box {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            overflow: hidden;
-            margin-bottom: 30px;
-        }
-
-        .result-header {
-            background-color: rgba(30, 41, 59, 0.5);
-            padding: 15px 20px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .video-title {
-            font-size: 16px;
-            font-weight: 600;
-            line-height: 1.5;
-            margin-bottom: 15px;
-        }
-
-        .action-bar {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .btn-action {
-            background-color: var(--btn-bg);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            padding: 6px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 13px;
-            transition: all 0.2s;
-        }
-
-        .btn-action:hover {
-            background-color: var(--btn-hover);
-        }
-
-        /* أنيميشن زر التوجل (Toggle Switch) لـ "فقرات" */
-        .para-toggle {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            user-select: none;
-            font-size: 14px;
-        }
-
-        .para-toggle-label {
-            color: var(--text-main);
-        }
-
-        .toggle-sw {
-            position: relative;
-            width: 44px;
-            height: 22px;
-        }
-
-        .toggle-sw input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .toggle-slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #334155;
-            transition: .3s;
-            border-radius: 22px;
-        }
-
-        .toggle-slider:before {
-            position: absolute;
-            content: "";
-            height: 16px;
-            width: 16px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .3s;
-            border-radius: 50%;
-        }
-
-        /* عند تفعيل وضع الفقرات يتحول السيان المعتمد بموقعك */
-        input:checked + .toggle-slider {
-            background-color: #00b894; /* أخضر أو سيان حسب الرغبة */
-        }
-        
-        input:checked + .toggle-slider:before {
-            transform: translateX(22px);
-        }
-
-        /* صندوق عرض النص والتحكم بفقراته */
-        .transcript-content {
-            padding: 25px;
-            max-height: 500px;
-            overflow-y: auto;
-            font-size: 15px;
-            line-height: 1.8;
-            color: #cbd5e1;
-            text-align: justify;
-            white-space: pre-wrap; /* يضمن تفعيل سطر جديد \n\n وعرضه كفقرة */
-            word-wrap: break-word;
-        }
-
-        /* --- قسم كيف يعمل والمذيل --- */
-        .how-it-works {
-            margin-bottom: 40px;
-        }
-
-        .section-title {
-            font-size: 18px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .steps-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-
-        .step-card {
-            background-color: rgba(19, 25, 38, 0.5);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-        }
-
-        .step-num {
-            width: 30px;
-            height: 30px;
-            background-color: var(--btn-bg);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 15px auto;
-            color: var(--primary-cyan);
-            font-weight: 700;
-        }
-
-        .step-card h4 { margin-bottom: 8px; font-size: 15px; }
-        .step-card p { color: var(--text-muted); font-size: 13px; line-height: 1.5; }
-
-        footer {
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 13px;
-            padding: 20px 0;
-            border-top: 1px solid var(--border-color);
-            width: 100%;
-            margin-top: auto;
-        }
-    </style>
+@media(max-width:600px){
+  .hero{padding:40px 0 28px}
+  .url-wrap{flex-direction:column}
+  .btn-go{text-align:center}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .how-grid{grid-template-columns:1fr}
+  .result-card-hd{flex-direction:column;align-items:flex-start;gap:8px}
+}
+</style>
 </head>
 <body>
 
-    <div class="container">
-        
-        <header>
-            <div class="logo-area">
-                <span class="logo">✨ نصّص</span>
-                <span class="badge-free">مجاني بالكامل</span>
-            </div>
-            <div class="user-welcome" id="userBadge">
-                ✓ أهلاً DARN! تم ربط حسابك بنجاح.
-            </div>
-        </header>
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <div class="logo-icon">✦</div>
+      <span class="logo-text">Nassas</span>
+    </a>
+    <span class="nav-tag">مجاني بالكامل</span>
+  </div>
+</nav>
 
-        <div class="main-card">
-            <p class="intro-text">الصق رابط الفيديو — نستخرج الترجمة الكاملة كلمةً بكلمة ونترجمها إلى لغتك. بدون تسجيل، بدون مفاتيح API.</p>
-            
-            <div class="input-group">
-                <input type="text" id="videoUrl" placeholder="الصق رابط فيديو يوتيوب أو Shorts هنا...">
-                <button class="btn-primary" onclick="startExtraction()">استخراج</button>
-            </div>
+<div class="container">
 
-            <div class="controls-row">
-                <div>
-                    <label style="color: var(--text-muted); font-size: 14px; margin-left: 8px;">ترجمة النص إلى:</label>
-                    <select class="translate-select" id="langSelect">
-                        <option value="none">بدون ترجمة</option>
-                        <option value="ar">🇮🇶 العربية</option>
-                        <option value="en" selected>🇺🇸 English</option>
-                        <option value="fr">🇫🇷 Français</option>
-                        <option value="de">🇩🇪 Deutsch</option>
-                        <option value="tr">🇹🇷 Türkçe</option>
-                    </select>
-                </div>
-                <button class="btn-action" style="background-color: #7f1d1d; border-color: #991b1b;">خروج</button>
-            </div>
-        </div>
+  <!-- Hero -->
+  <div class="hero">
+    <div class="eyebrow">✦ يعمل مع يوتيوب مباشرةً</div>
+    <h1>استخرج <span class="hl">نص أي فيديو</span><br>وترجمه بنقرة واحدة</h1>
+    <p>الصق رابط الفيديو — نستخرج الترجمة الكاملة كلمةً بكلمة ونترجمها إلى لغتك. بدون تسجيل، بدون مفاتيح API.</p>
+  </div>
 
-        <div class="stats-grid">
-            <div class="stat-box">
-                <div class="stat-val" id="statWords">1,337</div>
-                <div class="stat-lbl">كلمة</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-val" id="statTime">~8 د</div>
-                <div class="stat-lbl">وقت القراءة</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-val" id="statLang">Arabic</div>
-                <div class="stat-lbl">اللغة الأصلية</div>
-            </div>
-        </div>
+  <div class="ad-space">مساحة إعلانية</div>
 
-        <div class="result-box">
-            <div class="result-header">
-                <div class="video-title" id="videoTitle">
-                    العتبة العباسية ترد على فيديوات حيدر الحمداني: هناك من يدفع الأموال لتشويه سمعة مستشفى الكفيل.
-                </div>
-                <div class="action-bar">
-                    <label class="para-toggle">
-                        <span class="para-toggle-label">فقرات</span>
-                        <div class="toggle-sw">
-                            <input type="checkbox" id="paraCheckbox" onchange="toggleParagraphMode()" checked>
-                            <div class="toggle-slider"></div>
-                        </div>
-                    </label>
-                    <button class="btn-action" onclick="copyTranscript()">نسخ</button>
-                    <button class="btn-action" onclick="downloadTranscript()">تنزيل .txt</button>
-                </div>
-            </div>
-            
-            <div class="transcript-content" id="transcriptContainer">I greet my brothers and finally Al-Kafeel Hospital responded to Haider Al-Hamdani through who? عن طريق العتبه العباسيه المقدسه ومن خلال المدير الاعلامي للعتبه والذي ظهر بمقطع فيديوي يتحدث عن الحالات الانسانيه اللي ظهرت بها عن المقاريد والفقره اللي التقيت بهم واللي المستشفى ما مسويت لهم تخفيض ظهر بمقطع فيديو طوله 23 دقيقه قصيت من عنده الزبده واللي لغايه الان اني ما فهمت ايضا شي من الزبده اللي اني قصيتها من هذا المقطع الفيديوي خلي نشوف وياكم ماذا قال وما هو رايه بالمقاريد اللي ظهروا مع حيدر الحمداني >> هسه ليش يهاجم هذه المؤسسه الى دوافع اعلاميين مختلفين مره يكون الاعلامي عنده مشكله شخصيه مع هذه المؤسسه ومره اكو اعلامي عنده لا ان يكون مدفوع واحد اجا اطاه فلوس وقال له تعال احكي ليش؟ لانه كان يكون هذا الشخص المقابل يكره المستشفى عنده موقف وياهم ف ممكن انه يكون منافس مستشفى اخرى جايه منطيته فلوس حتى يسقط هاي المستشفى شلون يسقطها من هالباب هذا لكن هذا الموضوع يراد به عده امور اولا ضرب القدوم يكون ماكو شريف بهذا العراق ثانيا لضرب المرجعيه يعني المرجعيه الدينيه العليا عندها يعني رجال رجال المرجعيه عندها وكلاء وكيل الوكيل كلاصيل انا لما اجي ما اضرب المرجع اخاف >> ام >> مو قدها >> واخاف احكي على الوكيل احكي على مؤسسه هو يديرها ويشرف عليها فبالتالي هذه اذا سكتنا هنان راح ينتقل الى الحكي انه وين السيد اذا سماحه السيد لا يعرف يختار مدير مكتبه ولا يعرف اختار واحد يدير المستشفى وبيدري شكو ماكو والله انت ما تقبل يا السيد بس انت ما تعرف تختار انت ما تقبل بس انت ما تعرف تجيب ناس وتربيهم كارث اخوان هاي كلها انا مسويها لو منطيني فلوس لو اكو مستشفى دافعتني لو اكو جهه خارجيه دافعتني لضرب المستشفى وضرب المرجعيه وضرب وكيل المرجعيه هاي بس لان طلعت قلت لكم هالمساكين ذول ليش ما سويتوا لهم تخفيض بس قلت ذول المساكين ليش ما مسوي لهم تخفيض هاي طلعت اني اجندات واموال ومرجعيه زين المرجعيه ليش مدخلينها بالموضوع شنو علاقه السيد علي السستاني بمستشفى الكفيل حتى تدخلونه بالموضوع شنو علاقته؟ وهي رساله للسيد علي السستاني ابونا تاج راسنا الجماعه يردون يدخلونه بقوه بمستشفى الكفيل يردون يسووها مقدسه حالات انسانيه ظهرت بها قلت لكم ليش ما مخفضين وتواصلت مع مدير مكتب سماحه السيد احمد الصافي قبل ان ننشر هذه المناشده واكو مناشده اخرى ايضا ما صورناها ودزيناهم وما خفضتوا لهم شنو اللي نسوي بعد زين انا مو اتصلت بمدير مكتب السيد احمد الصافي استاذ اسالهم قول لهم حيدر اتصل لو ما اتصل خلينا نشوف هذا المقطع الفيديوي >> ا اكو ادعاءات كثيره ايضا انه هذا الفيديو >> يبين انه الشخص الاعلامي متصل ادعى ان هو متصل بمدير مكتب المتوليش الشرعي >> ادعى >> انا سالت مدير مكتب المتول شرعي ايش >> قال الحاج وادي الحسناوي >> حجي احد يتصل بيك قال لا والله >> حلف >> سابقا قبل قال ما حد متصل بيا قبل سنتين ما ادري ايش قد اجا اتصال هو نفس الشخص اجا كانت عنده حاجه واجا طلبها من الحجي ومن سماحه السيد طاهيه >> مثل ما ينطون لكل الناس يعني ابواب خير وابواب ا رحمه وتعاون وينطون لكل الناس ينطول له ولغيره اي واحده عندها طلبه يروح اذا طلبه مجاب يلبى اذا ضمن الضوابط انا طالب حاجه من السيد متاكد وانا متصل بحج جواد الحسناوي مدير مكتب سماحه السيد احمد الصافي قبل سنتين تاكيد يا الله اني ابو الدليل وانا ابو الوثيقه وما اتحدث اذا مو دليل وياي بس سولف لي شلون حج جواد قال لك والله شلون قسم قال لك حدر ما متصل بيه هاك 14/3 اتصلت به اكثر من مكالمه جاوبني قال لي انا مجلس وقلت له ممنون هاي الرساله موجوده موجوده لغايه الان عندي وبامكان تخاطبون شركه زين وتتاكدون انه ايش كم مره متصل به واكو حاله قبل سته اشهر اتصلت به اكثر من مره ولم يجيب حتى اجابني فيما بعد بعد ايام السكرتير اللي وياه او المرافق قلت له اكو حاله انسانية خطية صارت اموالهم 13 مليون ممكن سوي له تخفيض قال خليه يجيب تزكيه ويقدم طلب لمكتب سماحه السيد وقدمكتب سماحه السيد بعد ان دفعوا 12 مليون للمستشفى ولغايه الان فلس واحد ما مخفضين وهذا كله موثق بالاتصالات والمكالمات والرسائل فخويا بس شوف لحج جواد خلي يذبح فديه ما اعرف شنو لان قسم هذا القسم مالته مو صحيح يقوللك سنتين وين سنتين ما اتصل به الرساله موجوده والتاريخ مثبت سنتين ثقيله زين قضيه انه انا جاي قبل سنتين بطلب خاص وحاجه لسماحه السيد احمد الصافي متاكيد موارد احرجكم مو المجالس امانات انا جيت للسيد احمد الصافي بالفعل قبل سنه تقريبا والتقيت به وهو شخص محترم ومو انا اللي اقيمه بس مو عندي شغله خاصه لا عندي قضيه عامه شوفته في ذلك الوقت اشياء قال لي استر ان الله يحب الساترين شنو هاي الاشياء؟ ارجع لحج جواد خليه يقول لك بها بس لا يحلف لك بدون حلفان خليه يقول لك شنو السالفه اللي اجا بها حيدر الحمداني وحاكى بها السيد في وقتها شنو اني اللي اجي بطلب خاص ايش عندي ايش ردت من فرصة استثمارية ردت اشياء تدخل عندي بدون ضريبة وقمرك شنو رد شنو اللي يرد رته من السيد ما عندي شيء خاص هو هذا اللي مدوخ الراي العام انت جاي تقاتل و عرضك المنقول له المصلحة العامة ما يقتنع اخوان مصلحة عامة لهذا صوتي عالي ولن يتوقف فيا اخويا من تطلع السولف ارجوك تاكد من معلوماتك زحمه انه يزودونك بمعلومات تطلع طلع مو صحيحه زين ليش ما ردت مستشفى الكفيل وظهرت مع حيدر الحمداني انا ظهرت باكثر من حاله واكو حالات راح تطلع بعد ايضا ايش كم يوم ليش ما طلعت وياي وسولفته ووضحته للناس ليش اسالك استاذ ليش ما وضحته للناس المستشفى ليش ما ردت ما عندهم لسان لا والله خوش السنه عندهم وخوش فكير وخوش امكانية نيات وخوش زلم ومعدلين بس من يجي واحد يسالهم يسولفون وياه جيد يقول والله اشهد انه انتم خوش ناس واوادم ومتكلمين وثق بالله اني لو ما مفتش باللبن على الكلام اللي سمعته من حضرتك كان انا صدقت بنفسي انه اناي مدفوع الثمن واكو واحد دافعني عليكم حتى اسقط المستشفى بس مشكلتي مفتش باللبن لكن انا اقول ليش ما ظهرتوا وياي ووضحتوا للراي العام؟ Do you know why? Because I have one question to ask, I do not enter, no discounts, and they are not sad that I ask one question, Al-Kafeel Hospital, which cost about 120 billion Iraqi dinars to build? من اموال الشباك لو اكو مستثمر اجا بناها ام من الدوله هذا السؤال كنت اتمنى تجاوبنا عليه انا تابعت مقطعك الفيديو من اول ثانيه لاخر ثانيه ما لقيت جواب لهذا السؤال اللي مرارا وتكرارا جاي اسئله مستشفى الكفيل التي كلف بناؤها 120 مليار دينار عراقي منو بناها الدوله فلوس الشباك ام مستثمر جاوبون على هذا السؤال كل شي ما عندي تمام واتمنى من حضرتك اذا عندك نية تظهر بمقطع فيديوي اخر تجاوبني على هذا السؤال اذا ادارة المستشفى ما عندها امكانية تجاوب حيدر الحمداني وارجع واقول بما انه مستشفى الكفيل انشئ للتخفيف عن الفقراء والمحتاجين وحتى ما يسافرون للهند والدول المجاورة بودي انا اطرح سؤال هو وين اكو فقير يقدر يروح للهند او الدول المجاورة وين ماكو لهذا يلجا الى هذه المستشفى التي تحمل اسم ابا الفضل العباس لهذا اتمنى انه ما تخلطون الاوراق ما تدخلون ابونا السيد علي السستاني بالموضوع م له علاقه بريء ابدا واقحامه بالموضوع انا اعتبره تجاوز على مكتب المرجعية ولا اعتقد انه السيد احمد الصافي ايضا يقبل بهذه الردود وبهذه الافعال مثل ما طلعت اني سولفت ردوا هسه انتم عايفين الناس اللي طلعوا سولفوا وياي وطايحين برقبتي ذول الناس اللي طلعوا وياي يحكون صدق لو كذب جايين داقين بابكم وانتم راديهم اللي تحدثوا به حقيقي لو ذول جاي يظللون الراي العام جاوبوا هذه الاسئله المهمة مو المفروض انت استقصائي وانا مو استقصائي ناس مقاريدوا دقوا بابي ظهروا وياي وكفلت لكم حق الرد وتواصلت وياكم وما احد يجاوب شنو اللي يبي شنو اسويلكم انصب لكم سيطره اللي تسولفون وياي فيا عمي انا عندي سؤال واحد بس هاي المستشفى من بناها الدوله لو الشباك لو المستثمر تمام وسمعت انه مشتكين علي انتم اللي قال لكم اشتكوا علي اعتقد هذا ما يحبكم ويريد يدخل الشيطان ببيناتنا ابدا والله مو صحيح لان انا رجال نقلت صوت المواطنين وكفلت حق الرد تشتكون يعني تقول اسكت وانا سكوت ما اسكت وقبلكم ياما سحولوني وفرفروني ما تاكل ها القضية تمام اللهم اني بلغت اللهم فاشهد السلام عليكم ورحمة الله وبركاته</div>
-        </div>
-
-        <div class="how-it-works">
-            <h3 class="section-title">كيف يعمل؟ ثلاث خطوات للحصول على النص كاملاً</h3>
-            <div class="steps-grid">
-                <div class="step-card">
-                    <div class="step-num">١</div>
-                    <h4>الصق الرابط</h4>
-                    <p>أي رابط يوتيوب — فيديو عادي، شورتس، أو بث مباشر مسجّل.</p>
-                </div>
-                <div class="step-card">
-                    <div class="step-num">٢</div>
-                    <h4>نستخرج الترجمة</h4>
-                    <p>نجلب كل كلمة من ترجمة الفيديو — بكل اللغات المتاحة.</p>
-                </div>
-                <div class="step-card">
-                    <div class="step-num">٣</div>
-                    <h4>انسخ أو حمّل</h4>
-                    <p>النص جاهز — انسخه أو حمّله كملف .txt مباشرة.</p>
-                </div>
-            </div>
-        </div>
-
+  <!-- Main Card -->
+  <div class="card">
+    <div class="card-hd">
+      <div class="card-title">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>
+        استخراج النص
+      </div>
     </div>
+    <div class="card-body">
 
-    <footer>
-        نصّص — مجاني ومفتوح المصدر &middot; لا يُجمع أي بيانات &middot; MyMemory API
-    </footer>
+      <!-- Auth Strip -->
+      <div class="auth-strip" id="authStrip">
+        <div class="info" id="authInfo">سجّل دخولك لحفظ تفضيلاتك ودعم استقرار الخادم</div>
+        <div id="gSignInWrap">
+          <div id="g_id_onload"
+               data-client_id="138500307114-u01vqrpjhu84qui67jv7uspo5ak7b07f.apps.googleusercontent.com"
+               data-context="signin" data-ux_mode="popup"
+               data-callback="handleGoogleSignIn" data-auto_select="false"></div>
+          <div class="g_id_signin" data-type="standard" data-shape="pill"
+               data-theme="filled_dark" data-text="signin_with"
+               data-size="medium" data-logo_alignment="left"></div>
+        </div>
+        <div id="userBadge" style="display:none;align-items:center;gap:10px">
+          <span class="auth-user" id="userName"></span>
+          <button class="btn-signout" onclick="signOut()">خروج</button>
+        </div>
+      </div>
 
-    <script>
-        // تخزين النص الأصلي بشكل آمن في الذاكرة لتسهيل التبديل
-        let originalText = document.getElementById("transcriptContainer").textContent;
+      <!-- URL Input -->
+      <div class="url-wrap">
+        <input class="url-input" id="urlInput"
+               placeholder="https://www.youtube.com/watch?v=..."
+               autocomplete="off" spellcheck="false" />
+        <button class="btn-go" id="mainBtn" onclick="startProcess()">استخراج</button>
+      </div>
 
-        // تنفيذ دالة التنسيق فور تحميل الصفحة لأن الزر الافتراضي مفعل (Checked)
-        window.addEventListener('DOMContentLoaded', () => {
-            toggleParagraphMode();
-        });
+      <!-- Lang Pills -->
+      <div class="opt-label">ترجمة النص إلى</div>
+      <div class="pill-group" id="langGroup">
+        <button class="pill active" data-lang="none">بدون ترجمة</button>
+        <button class="pill" data-lang="ar">🇮🇶 العربية</button>
+        <button class="pill" data-lang="en">🇺🇸 English</button>
+        <button class="pill" data-lang="fr">🇫🇷 Français</button>
+        <button class="pill" data-lang="de">🇩🇪 Deutsch</button>
+        <button class="pill" data-lang="tr">🇹🇷 Türkçe</button>
+      </div>
 
-        // دالة التقسيم الذكي للفقرات بناءً على عدد الكلمات
-        function formatToParagraphs(text) {
-            if (!text) return "";
-            let words = text.trim().split(/\s+/);
-            let result = "";
-            let wordsPerParagraph = 35; // عدد الكلمات المثالي لكل فقرة للراحة البصرية
+      <!-- Status / Error / Result areas -->
+      <div id="statusArea" style="display:none"></div>
+      <div id="errArea"    style="display:none"></div>
 
-            for (let i = 0; i < words.length; i++) {
-                result += words[i] + " ";
-                if ((i + 1) % wordsPerParagraph === 0 && i !== words.length - 1) {
-                    result += "\n\n"; // وضع سطرين لتوليد فقرة
-                }
-            }
-            return result.trim();
-        }
+      <!-- Manual Fallback -->
+      <div id="manualBox" class="manual-box" style="display:none">
+        <div class="label">💡 الخطة البديلة — الصق النص يدوياً</div>
+        <div class="sub">افتح الفيديو في يوتيوب ← فعّل الترجمة ← انسخ النص ← الصقه هنا</div>
+        <textarea class="manual-textarea" id="manualText" placeholder="الصق نص الترجمة كاملاً هنا..."></textarea>
+        <button class="btn-sm btn-pri" onclick="processManual()">✓ معالجة النص</button>
+      </div>
 
-        // دالة التبديل عند تفعيل أو تعطيل خيار "فقرات"
-        function toggleParagraphMode() {
-            const isChecked = document.getElementById("paraCheckbox").checked;
-            const container = document.getElementById("transcriptContainer");
+      <div id="resultArea"></div>
+    </div>
+  </div>
 
-            if (isChecked) {
-                container.textContent = formatToParagraphs(originalText);
-            } else {
-                container.textContent = originalText;
-            }
-        }
+  <div class="ad-space">مساحة إعلانية</div>
 
-        // دالة استخراج (محاكاة للربط مع الباكيند الخاص بك)
-        function startExtraction() {
-            const url = document.getElementById("videoUrl").value;
-            if(!url) {
-                alert("الرجاء إدخال رابط فيديو أولاً!");
-                return;
-            }
-            alert("جاري جلب النص من السيرفر الخاص بك...");
-            // هنا تضع كود الـ fetch المعتاد لـ Railway أو الباكيند الخاص بك
-        }
+  <!-- Auth Card (لمن لم يسجّل بعد) -->
+  <div class="auth-card" id="authCardBottom">
+    <h3>انضم إلى مجتمع نصّص</h3>
+    <p>سجّل دخولك لحفظ تفضيلاتك وتاريخ استخراجاتك ودعم استقرار الخوادم — مجاناً دائماً.</p>
+    <div class="g-wrap">
+      <div class="g_id_signin" data-type="standard" data-shape="rectangular"
+           data-theme="outline" data-size="large" data-logo_alignment="left"></div>
+    </div>
+  </div>
 
-        // دالة نسخ النص إلى الحافظة
-        function copyTranscript() {
-            const text = document.getElementById("transcriptContainer").textContent;
-            navigator.clipboard.writeText(text).then(() => {
-                alert("تم نسخ النص بنجاح!");
-            }).catch(err => {
-                alert("حدث خطأ أثناء النسخ");
-            });
-        }
+  <!-- How It Works -->
+  <div class="how">
+    <div class="how-title">كيف يعمل؟</div>
+    <div class="how-sub">ثلاث خطوات للحصول على النص كاملاً</div>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-num">١</div>
+        <h4>الصق الرابط</h4>
+        <p>أي رابط يوتيوب — فيديو عادي، شورتس، أو بث مباشر مسجّل</p>
+      </div>
+      <div class="how-card">
+        <div class="how-num">٢</div>
+        <h4>نستخرج الترجمة</h4>
+        <p>نجلب كل كلمة من ترجمة الفيديو — بكل اللغات المتاحة</p>
+      </div>
+      <div class="how-card">
+        <div class="how-num">٣</div>
+        <h4>انسخ أو حمّل</h4>
+        <p>النص جاهز — انسخه أو حمّله كملف .txt مباشرة</p>
+      </div>
+    </div>
+  </div>
 
-        // دالة تحميل النص كملف TXT
-        function downloadTranscript() {
-            const text = document.getElementById("transcriptContainer").textContent;
-            const title = document.getElementById("videoTitle").textContent.trim().substring(0, 30);
-            const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
-            const link = document.createElement("a");
-            link.href = URL.createObjectURL(blob);
-            link.download = `${title || 'transcript'}.txt`;
-            link.click();
-            URL.revokeObjectURL(link.href);
-        }
-    </script>
+</div>
+
+<footer>
+  نصّص — مجاني ومفتوح المصدر &nbsp;·&nbsp;
+  لا يُجمع أي بيانات &nbsp;·&nbsp;
+  <a href="https://mymemory.translated.net" target="_blank">MyMemory API</a>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══════════════════════════════════════
+   نصّص — index.html النسخة النهائية
+   بدون AI — التركيز الكامل على الاستخراج
+══════════════════════════════════════ */
+
+const BACKEND = 'https://backend-production-fe55.up.railway.app';
+
+// ─── State ───
+let targetLang        = localStorage.getItem('nassas_lang') || 'none';
+let globalText        = '';
+let videoTitle        = 'transcript';
+let userToken         = localStorage.getItem('nassas_token') || '';
+let userDisplayName   = localStorage.getItem('nassas_name')  || '';
+
+// ─── Init ───
+document.addEventListener('DOMContentLoaded', () => {
+  // استرجاع اللغة المحفوظة
+  const saved = document.querySelector(`#langGroup [data-lang="${targetLang}"]`);
+  if (saved) { clearPills('langGroup'); saved.classList.add('active'); }
+
+  // تفعيل pills اللغة
+  document.querySelectorAll('#langGroup .pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      clearPills('langGroup');
+      btn.classList.add('active');
+      targetLang = btn.dataset.lang;
+      localStorage.setItem('nassas_lang', targetLang);
+    });
+  });
+
+  // Enter key
+  document.getElementById('urlInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') startProcess();
+  });
+
+  // عرض معلومات المستخدم إن كان مسجّلاً
+  if (userToken && userDisplayName) updateAuthUI(true);
+});
+
+function clearPills(groupId) {
+  document.querySelectorAll(`#${groupId} .pill`).forEach(b => b.classList.remove('active'));
+}
+
+// ─── Google Sign-In ───
+function handleGoogleSignIn(response) {
+  const payload     = JSON.parse(atob(response.credential.split('.')[1]));
+  userToken         = response.credential;
+  userDisplayName   = payload.name || payload.email || 'مستخدم';
+  localStorage.setItem('nassas_token', userToken);
+  localStorage.setItem('nassas_name',  userDisplayName);
+  updateAuthUI(true);
+  document.getElementById('authCardBottom').style.display = 'none';
+  toast('✓ أهلاً ' + userDisplayName + '! تم ربط حسابك بنجاح.');
+}
+
+function signOut() {
+  userToken = ''; userDisplayName = '';
+  localStorage.removeItem('nassas_token');
+  localStorage.removeItem('nassas_name');
+  updateAuthUI(false);
+  document.getElementById('authCardBottom').style.display = 'block';
+  toast('تم تسجيل الخروج');
+}
+
+function updateAuthUI(loggedIn) {
+  const gWrap  = document.getElementById('gSignInWrap');
+  const badge  = document.getElementById('userBadge');
+  const info   = document.getElementById('authInfo');
+  if (loggedIn) {
+    gWrap.style.display = 'none';
+    badge.style.display = 'flex';
+    document.getElementById('userName').textContent = userDisplayName;
+    info.textContent  = 'مرحباً — تفضيلاتك محفوظة';
+    info.style.color  = 'var(--accent)';
+  } else {
+    gWrap.style.display = 'block';
+    badge.style.display = 'none';
+    info.textContent  = 'سجّل دخولك لحفظ تفضيلاتك ودعم استقرار الخادم';
+    info.style.color  = '';
+  }
+}
+
+// ─── Helpers ───
+function toast(msg, dur = 2800) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), dur);
+}
+
+// حماية XSS — دائماً قبل innerHTML
+function esc(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─── Video ID ───
+function getVideoId(url) {
+  const ps = [
+    /[?&]v=([^&#]{11})/,
+    /youtu\.be\/([^?&#]{11})/,
+    /embed\/([^?&#]{11})/,
+    /shorts\/([^?&#]{11})/
+  ];
+  for (const p of ps) { const m = url.match(p); if (m) return m[1]; }
+  return null;
+}
+
+// ─── Steps Renderer ───
+let _prog = 5;
+function setProgress(pct) {
+  _prog = pct;
+  const el = document.getElementById('pFill');
+  if (el) el.style.width = Math.min(100, Math.round(pct)) + '%';
+}
+
+function renderSteps(steps, showBar = true) {
+  const area = document.getElementById('statusArea');
+  area.style.display = 'block';
+  area.innerHTML = `<div class="steps-wrap">
+    ${steps.map(s => `
+      <div class="step s-${s.state}">
+        <div class="step-ic">
+          ${s.state === 'done'   ? '✓'
+          : s.state === 'active' ? '<span class="spin">↻</span>'
+          : '○'}
+        </div>
+        <span class="step-lbl">${esc(s.label)}</span>
+        ${s.note ? `<span class="step-note">${esc(s.note)}</span>` : ''}
+      </div>`).join('')}
+    ${showBar ? `<div class="prog-bar"><div class="prog-fill" id="pFill" style="width:${_prog}%"></div></div>` : ''}
+  </div>`;
+}
+
+// ─── Error Display ───
+function showErr(title, msg, showManual = false) {
+  const ea = document.getElementById('errArea');
+  ea.style.display = 'block';
+  ea.innerHTML = `<div class="err-box">
+    <div class="err-title">⚠ ${esc(title)}</div>
+    <div class="err-msg">${esc(msg)}</div>
+  </div>`;
+  document.getElementById('statusArea').style.display = 'none';
+  if (showManual) document.getElementById('manualBox').style.display = 'block';
+}
+
+// ─── Translation (Fixed) ───
+// إصلاح ١: تقطيع بالجمل لا بالحروف
+// إصلاح ٢: طلبات متسلسلة مع تأخير لتفادي Rate Limit
+// إصلاح ٣: langpair صحيح باستخدام اللغة من الـ backend
+async function translateAll(text, srcLang) {
+  // بناء الـ chunks بالجمل بدل قطع الكلمات
+  const sentences  = text.match(/[^.!?؟\n]{1,}[.!?؟\n]*/g) || [text];
+  const chunks     = [];
+  let   cur        = '';
+
+  for (const s of sentences) {
+    if ((cur + s).length > 450) {
+      if (cur.trim()) chunks.push(cur.trim());
+      cur = s;
+    } else {
+      cur += s;
+    }
+  }
+  if (cur.trim()) chunks.push(cur.trim());
+
+  // srcLang: 'und' → 'autodetect' ، أي قيمة فارغة → 'autodetect'
+  const src = (srcLang && srcLang !== 'und' && srcLang !== 'none') ? srcLang : 'en';
+  let out = '';
+  for (let i = 0; i < chunks.length; i++) {
+    setProgress(30 + (i / chunks.length) * 65);
+
+    try {
+      const r = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=' + src + '&tl=' + targetLang + '&dt=t&q=' + encodeURIComponent(chunks[i]));
+      const d = await r.json();
+      const translated = d?.[0]?.map(s => s?.[0] || '').join('') || chunks[i];
+      out += translated + ' ';
+    } catch {
+      out += chunks[i] + ' '; // fallback: النص الأصلي
+    }
+
+    // تأخير 150ms بين كل طلب لتفادي حظر MyMemory
+    if (i < chunks.length - 1) await delay(150);
+  }
+
+  return out.trim();
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ─── Main Process ───
+async function startProcess() {
+  const urlInp   = document.getElementById('urlInput');
+  const mainBtn  = document.getElementById('mainBtn');
+  const errArea  = document.getElementById('errArea');
+  const resArea  = document.getElementById('resultArea');
+  const manualB  = document.getElementById('manualBox');
+  const statusA  = document.getElementById('statusArea');
+
+  // Reset
+  errArea.style.display = 'none';
+  manualB.style.display = 'none';
+  resArea.innerHTML     = '';
+  globalText            = '';
+  _prog                 = 5;
+
+  const url = urlInp.value.trim();
+  if (!url) { toast('الصق رابط الفيديو أولاً'); return; }
+
+  const vId = getVideoId(url);
+  if (!vId) {
+    showErr('رابط غير صحيح', 'تأكد من نسخ رابط يوتيوب كاملاً (فيديو، شورتس، أو بث مسجّل).');
+    return;
+  }
+
+  mainBtn.disabled = true;
+
+  // بناء الخطوات حسب الإعدادات
+  const steps = [{ key:'fetch', label:'استخراج النص من يوتيوب', state:'active' }];
+  if (targetLang !== 'none')
+    steps.push({ key:'trans', label:`ترجمة النص إلى ${langName(targetLang)}`, state:'pend' });
+
+  renderSteps(steps, true);
+  setProgress(5);
+
+  try {
+    // ── الخطوة ١: جلب النص ──
+    const ctrl  = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 30000);
+
+    const res = await fetch(`${BACKEND}/api/transcript?v=${vId}`, {
+      headers: { 'Accept': 'application/json', 'user-token': userToken },
+      signal: ctrl.signal
+    });
+    clearTimeout(timer);
+
+    // تحليل الخطأ بدقة
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}));
+      const msg  = body.error || '';
+      if (res.status === 404 || msg.includes('ترجمة'))
+        throw Object.assign(new Error(msg || 'لا ترجمة'), { type: 'NO_CAPTION' });
+      if (res.status === 403 || msg.includes('مقيّد'))
+        throw Object.assign(new Error(msg), { type: 'RESTRICTED' });
+      throw Object.assign(new Error(msg || `خطأ ${res.status}`), { type: 'SERVER' });
+    }
+
+    const data = await res.json();
+    if (!data.raw || !data.raw.trim())
+      throw Object.assign(new Error('الترجمة فارغة'), { type: 'NO_CAPTION' });
+
+    videoTitle = data.title || 'transcript';
+    let text   = data.raw;
+    let lang   = data.lang || 'und';
+
+    // تحديث الخطوة ١
+    steps[0].state = 'done';
+    setProgress(25);
+
+    // ── الخطوة ٢: الترجمة (إن طُلبت) ──
+    const tIdx = steps.findIndex(s => s.key === 'trans');
+    if (tIdx !== -1) {
+      steps[tIdx].state = 'active';
+      renderSteps(steps, true);
+      text = await translateAll(text, lang);
+      steps[tIdx].state = 'done';
+    }
+
+    setProgress(100);
+    await delay(500);
+    statusA.style.display = 'none';
+
+    globalText = text;
+    showResult(data);
+
+  } catch (err) {
+    console.error('[nassas]', err);
+
+    if (err.name === 'AbortError') {
+      showErr(
+        'انتهت مهلة الاتصال (30 ثانية)',
+        'السيرفر لم يستجب في الوقت المحدد. تأكد من أن Railway شغّال وحاول مجدداً.',
+        true
+      );
+    } else if (err.type === 'NO_CAPTION') {
+      showErr(
+        'لا توجد ترجمة لهذا الفيديو',
+        'يوتيوب لا يوفر ترجمة لهذا الفيديو — إما أنها معطّلة أو الفيديو موسيقى فقط.\nاستخدم الخطة البديلة إذا لديك النص.',
+        true
+      );
+    } else if (err.type === 'RESTRICTED') {
+      showErr(
+        'الفيديو مقيّد بواسطة يوتيوب',
+        'هذا الفيديو مقيّد جغرافياً أو يتطلب تسجيل دخول مباشر على يوتيوب.\nافتح الفيديو في يوتيوب، انسخ الترجمة يدوياً، واستخدم الخطة البديلة أدناه.',
+        true
+      );
+    } else {
+      showErr(
+        'خطأ في الاتصال بالسيرفر',
+        (err.message || 'تعذّر الوصول للخادم.') + '\nتحقق من اتصالك وحاول مجدداً.',
+        true
+      );
+    }
+  } finally {
+    mainBtn.disabled = false;
+  }
+}
+
+// ─── Manual Fallback ───
+async function processManual() {
+  const raw       = document.getElementById('manualText').value.trim();
+  const statusA   = document.getElementById('statusArea');
+  const errArea   = document.getElementById('errArea');
+  if (!raw) { toast('الصق النص أولاً'); return; }
+
+  errArea.style.display = 'none';
+
+  if (targetLang === 'none') {
+    globalText = raw;
+    document.getElementById('manualBox').style.display = 'none';
+    showResult({ title: 'نص يدوي', lang: 'und' });
+    return;
+  }
+
+  _prog = 5;
+  const steps = [{ key:'trans', label:`ترجمة النص إلى ${langName(targetLang)}`, state:'active' }];
+  renderSteps(steps, true);
+
+  const text        = await translateAll(raw, 'und');
+  steps[0].state    = 'done';
+  setProgress(100);
+  await delay(400);
+  statusA.style.display = 'none';
+
+  globalText = text;
+  document.getElementById('manualBox').style.display = 'none';
+  showResult({ title: 'نص يدوي', lang: targetLang });
+}
+
+// ─── Result Renderer ───
+function showResult(data) {
+  const words    = globalText.split(/\s+/).filter(w => w.length > 0);
+  const readMin  = Math.max(1, Math.ceil(words.length / 180));
+  const langLbl  = targetLang !== 'none' ? langName(targetLang) : (langName(data.lang) || 'أصلية');
+
+  document.getElementById('resultArea').innerHTML = `
+    <div class="result-wrap">
+      <div class="stats-row">
+        <div class="stat">
+          <div class="stat-v">${words.length.toLocaleString('ar')}</div>
+          <div class="stat-l">كلمة</div>
+        </div>
+        <div class="stat">
+          <div class="stat-v">~${readMin} د</div>
+          <div class="stat-l">وقت القراءة</div>
+        </div>
+        <div class="stat">
+          <div class="stat-v">${esc(langLbl)}</div>
+          <div class="stat-l">اللغة</div>
+        </div>
+      </div>
+      <div class="result-card">
+        <div class="result-card-hd">
+          <span class="result-card-title">${esc(data.title || 'النص المستخرج')}</span>
+          <div class="result-actions">
+            <button class="btn-action" onclick="copyText()">نسخ</button>
+            <button class="btn-action" onclick="downloadTxt()">تنزيل .txt</button>
+          </div>
+        </div>
+        <div class="result-body">
+          <div class="tx-text">${esc(globalText)}</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+// ─── Copy / Download ───
+function copyText() {
+  navigator.clipboard.writeText(globalText)
+    .then(()  => toast('✓ تم نسخ النص الكامل'))
+    .catch(()  => toast('⚠ فشل النسخ — حدده يدوياً'));
+}
+
+function downloadTxt() {
+  const safe = videoTitle.replace(/[\\/:*?"<>|]/g, '_');
+  const blob  = new Blob([globalText], { type: 'text/plain;charset=utf-8' });
+  const a     = document.createElement('a');
+  a.href      = URL.createObjectURL(blob);
+  a.download  = `${safe}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+  toast('✓ بدأ تحميل الملف');
+}
+
+// ─── Lang Labels ───
+function langName(code) {
+  const map = { ar:'العربية', en:'English', fr:'Français', de:'Deutsch', tr:'Türkçe', und:'أصلية', none:'أصلية' };
+  return map[code] || (code ? code.toUpperCase() : 'أصلية');
+}
+</script>
 </body>
 </html>
