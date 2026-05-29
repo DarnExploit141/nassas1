@@ -466,19 +466,15 @@ async function translateAll(text, srcLang) {
 
   // srcLang: 'und' → 'autodetect' ، أي قيمة فارغة → 'autodetect'
 const src = (srcLang && srcLang !== 'und' && srcLang !== 'none') ? srcLang : 'en';
-  const pair = `${src}|${targetLang}`;
   let out = '';
   for (let i = 0; i < chunks.length; i++) {
     setProgress(30 + (i / chunks.length) * 65);
 
     try {
-      const r = await fetch(
-        `https://api.mymemory.translated.net/get?q=${encodeURIComponent(chunks[i])}&langpair=${encodeURIComponent(pair)}`
-      );
-      const d = await r.json();
-      out += (d.responseStatus === 200 && d.responseData?.translatedText
-        ? d.responseData.translatedText
-        : chunks[i]) + ' ';
+      const r = await fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=' + src + '&tl=' + targetLang + '&dt=t&q=' + encodeURIComponent(chunks[i]));
+     const d = await r.json();
+      const translated = d?.[0]?.map(s => s?.[0] || '').join('') || chunks[i];
+out += translated + ' ';
     } catch {
       out += chunks[i] + ' '; // fallback: النص الأصلي
     }
